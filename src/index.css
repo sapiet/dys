@@ -1,0 +1,30 @@
+@import 'tailwindcss';
+
+/* Le site n'existe qu'en sombre : la palette est définie une fois ici plutôt
+   que dupliquée en variantes `dark:` sur chaque élément. */
+@theme {
+  --color-ink: #0e0e13;
+  --color-panel: #131319;
+  --color-surface: #16161e;
+  --color-raised: #1c1c26;
+  --color-line: #26262f;
+  --color-line-strong: #33333f;
+
+  --color-bright: #e8e8ef;
+  --color-dim: #a0a0b5;
+  --color-faint: #6f6f85;
+
+  --color-accent: #6d5ee8;
+  --color-accent-soft: #1e1b33;
+  --color-accent-text: #b7aef5;
+}
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  body {
+    @apply bg-ink text-bright antialiased;
+  }
+}

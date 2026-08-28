@@ -1,0 +1,69 @@
+import { tracks } from '../lib/media'
+import { duration } from '../lib/format'
+
+const NAV = [
+  { path: '/', name: 'tracks', label: 'Morceaux', icon: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' },
+  { path: '/types', name: 'types', label: 'Types', icon: 'M4 6h16M4 12h16M4 18h16' },
+]
+
+function Icon({ path, className = 'size-5' }) {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+      strokeLinecap="round" strokeLinejoin="round" className={className} aria-hidden="true">
+      <path d={path} />
+    </svg>
+  )
+}
+
+export function Layout({ route, children }) {
+  return (
+    <div className="min-h-dvh pb-36 md:pb-24">
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 flex-col border-r border-line px-3 py-5 md:flex">
+        <a href="#/" className="px-2 pb-5 text-lg font-medium tracking-tight">dys</a>
+
+        <nav className="flex flex-col gap-0.5">
+          {NAV.map((entry) => (
+            <a key={entry.path} href={`#${entry.path}`}
+              className={`flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm transition-colors ${
+                route.name === entry.name || (entry.name === 'tracks' && route.name === 'track')
+                  ? 'bg-accent-soft text-accent-text'
+                  : 'text-dim hover:bg-surface hover:text-bright'
+              }`}>
+              <Icon path={entry.icon} />
+              {entry.label}
+            </a>
+          ))}
+        </nav>
+
+        <p className="mt-7 px-2.5 pb-2 text-xs text-faint">Morceaux</p>
+        <div className="flex flex-col gap-0.5 overflow-y-auto">
+          {tracks.map((track) => (
+            <a key={track.id} href={`#/track/${track.id}`}
+              className={`flex items-baseline justify-between rounded-lg px-2.5 py-1.5 text-sm transition-colors ${
+                route.trackId === track.id ? 'bg-surface text-bright' : 'text-dim hover:text-bright'
+              }`}>
+              <span className="truncate">{track.title}</span>
+              <span className="ml-2 shrink-0 text-xs text-faint">{duration(track.duration)}</span>
+            </a>
+          ))}
+        </div>
+      </aside>
+
+      <main className="mx-auto max-w-4xl px-5 py-6 md:ml-56 md:px-8 md:py-9">{children}</main>
+
+      <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-ink pb-[env(safe-area-inset-bottom)] md:hidden">
+        {NAV.map((entry) => (
+          <a key={entry.path} href={`#${entry.path}`}
+            className={`flex flex-1 flex-col items-center gap-1 py-2.5 text-[11px] ${
+              route.name === entry.name || (entry.name === 'tracks' && route.name === 'track')
+                ? 'text-accent-text'
+                : 'text-faint'
+            }`}>
+            <Icon path={entry.icon} className="size-[22px]" />
+            {entry.label}
+          </a>
+        ))}
+      </nav>
+    </div>
+  )
+}
