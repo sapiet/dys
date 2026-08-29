@@ -10,7 +10,8 @@
       "itemIds": [
         "master-01",
         "playthrough-bass-01",
-        "playthrough-guitar-left-01"
+        "playthrough-guitar-left-01",
+        "backing-track-drums-01"
       ]
     },
     {
@@ -22,7 +23,8 @@
       "itemIds": [
         "master-02",
         "playthrough-bass-02",
-        "playthrough-guitar-left-02"
+        "playthrough-guitar-left-02",
+        "backing-track-drums-02"
       ]
     },
     {
@@ -34,7 +36,8 @@
       "itemIds": [
         "master-03",
         "playthrough-bass-03",
-        "playthrough-guitar-left-03"
+        "playthrough-guitar-left-03",
+        "backing-track-drums-03"
       ]
     },
     {
@@ -58,7 +61,8 @@
       "duration": 256,
       "itemIds": [
         "master-05",
-        "playthrough-guitar-left-05"
+        "playthrough-guitar-left-05",
+        "backing-track-drums-05"
       ]
     },
     {
@@ -69,7 +73,8 @@
       "duration": 188,
       "itemIds": [
         "master-06",
-        "playthrough-guitar-left-06"
+        "playthrough-guitar-left-06",
+        "backing-track-drums-06"
       ]
     }
   ],
@@ -125,7 +130,12 @@
           "id": "backing-track-drums",
           "label": "Drums",
           "itemIds": [
-            "backing-track-drums-04"
+            "backing-track-drums-01",
+            "backing-track-drums-02",
+            "backing-track-drums-03",
+            "backing-track-drums-04",
+            "backing-track-drums-05",
+            "backing-track-drums-06"
           ]
         }
       ]
@@ -193,6 +203,26 @@
       ]
     },
     {
+      "id": "backing-track-drums-01",
+      "kind": "backing-track",
+      "trackId": "01",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 248,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/01.mp3",
+          "bytes": 4956912,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
       "id": "master-02",
       "kind": "master",
       "trackId": "02",
@@ -253,6 +283,26 @@
       ]
     },
     {
+      "id": "backing-track-drums-02",
+      "kind": "backing-track",
+      "trackId": "02",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 186,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/02.mp3",
+          "bytes": 3726022,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
       "id": "master-03",
       "kind": "master",
       "trackId": "03",
@@ -309,6 +359,26 @@
           "bytes": 55061836,
           "width": 960,
           "height": 540
+        }
+      ]
+    },
+    {
+      "id": "backing-track-drums-03",
+      "kind": "backing-track",
+      "trackId": "03",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 186,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/03.mp3",
+          "bytes": 3727067,
+          "width": null,
+          "height": null
         }
       ]
     },
@@ -379,14 +449,14 @@
       "instrument": "drums",
       "label": "Drums backing track",
       "instrumentLabel": "Drums",
-      "duration": 188,
+      "duration": 192,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
           "path": "audio/backing-tracks/drums/04.mp3",
-          "bytes": 4269975,
+          "bytes": 3844618,
           "width": null,
           "height": null
         }
@@ -433,6 +503,26 @@
       ]
     },
     {
+      "id": "backing-track-drums-05",
+      "kind": "backing-track",
+      "trackId": "05",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 258,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/05.mp3",
+          "bytes": 5155443,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
       "id": "master-06",
       "kind": "master",
       "trackId": "06",
@@ -469,6 +559,26 @@
           "bytes": 53291930,
           "width": 1920,
           "height": 1080
+        }
+      ]
+    },
+    {
+      "id": "backing-track-drums-06",
+      "kind": "backing-track",
+      "trackId": "06",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 218,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/06.mp3",
+          "bytes": 4364978,
+          "width": null,
+          "height": null
         }
       ]
     }
