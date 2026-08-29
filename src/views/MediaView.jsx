@@ -49,7 +49,7 @@ export function MediaView() {
         <div className="flex flex-wrap gap-2">
           {all.map((g) => (
             <button key={g.id} onClick={() => selectNature(g)}
-              className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              className={`rounded-full px-3 py-1.5 text-[13px] transition-colors ${
                 g.id === natureId
                   ? 'bg-accent text-white'
                   : 'border border-line-strong text-dim hover:text-bright'
@@ -65,7 +65,7 @@ export function MediaView() {
           <div className="mt-3 flex flex-wrap gap-4 border-t border-line pt-3">
             {nature.children.map((c) => (
               <button key={c.id} onClick={() => setChildId(c.id)}
-                className={`border-b-2 pb-1 text-sm transition-colors ${
+                className={`border-b-2 pb-1 text-[13px] transition-colors ${
                   c.id === group?.id
                     ? 'border-accent text-accent-text'
                     : 'border-transparent text-faint hover:text-bright'

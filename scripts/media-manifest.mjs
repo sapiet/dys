@@ -99,7 +99,9 @@ const groups = []
 for (const item of list) {
   let nature = groups.find((g) => g.id === item.kind)
   if (!nature) {
-    nature = { id: item.kind, label: `${KIND_LABELS[item.kind]}s`, itemIds: [], children: [] }
+    // Au singulier : la pastille nomme une catégorie, pas un décompte, et le
+    // pluriel n'ajoutait qu'une lettre à une ligne déjà chargée.
+    nature = { id: item.kind, label: KIND_LABELS[item.kind], itemIds: [], children: [] }
     groups.push(nature)
   }
 

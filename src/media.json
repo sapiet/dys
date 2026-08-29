@@ -76,7 +76,7 @@
   "groups": [
     {
       "id": "master",
-      "label": "Masters",
+      "label": "Master",
       "itemIds": [
         "master-01",
         "master-02",
@@ -89,7 +89,7 @@
     },
     {
       "id": "playthrough",
-      "label": "Playthroughs",
+      "label": "Playthrough",
       "itemIds": [],
       "children": [
         {
@@ -118,7 +118,7 @@
     },
     {
       "id": "backing-track",
-      "label": "Backing tracks",
+      "label": "Backing track",
       "itemIds": [],
       "children": [
         {
