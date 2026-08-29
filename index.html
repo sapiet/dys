@@ -3,8 +3,38 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="robots" content="noindex, nofollow" />
+    <meta name="theme-color" content="#090c12" />
+    <!-- Ces quatre-là ne sont pas posées par le plugin : sans elles, iOS
+         installe bien l'app mais avec une icône générique et une barre d'état
+         claire sur fond sombre. -->
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="DYS" />
+    <link rel="apple-touch-icon" href="%BASE_URL%icons/icon-192.png" />
+    <link rel="icon" type="image/png" href="%BASE_URL%icons/icon-192.png" />
     <title>Drown Your Sorrows</title>
+    <meta name="description" content="Compositions, playthroughs et captations de Drown Your Sorrows." />
+
+    <!-- Aperçus de partage. Les URLs sont absolues : les robots d'aperçu ne
+         résolvent pas le relatif. `%SITE_URL%` est injecté au build. -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Drown Your Sorrows" />
+    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:title" content="Drown Your Sorrows" />
+    <meta property="og:description" content="Compositions, playthroughs et captations." />
+    <meta property="og:url" content="%SITE_URL%" />
+    <meta property="og:image" content="%SITE_URL%og.jpg" />
+    <meta property="og:image:secure_url" content="%SITE_URL%og.jpg" />
+    <meta property="og:image:type" content="image/jpeg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Logo de Drown Your Sorrows" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Drown Your Sorrows" />
+    <meta name="twitter:description" content="Compositions, playthroughs et captations." />
+    <meta name="twitter:image" content="%SITE_URL%og.jpg" />
+    <meta name="twitter:image:alt" content="Logo de Drown Your Sorrows" />
   </head>
   <body>
     <div id="root"></div>
