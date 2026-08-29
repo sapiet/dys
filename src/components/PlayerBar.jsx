@@ -1,6 +1,7 @@
 import { usePlayer } from '../player/PlayerContext'
 import { getTrack, isVideo } from '../lib/media'
 import { duration as fmt } from '../lib/format'
+import { SeekBar } from './SeekBar'
 
 export function PlayerBar() {
   const { current, playing, time, duration, volume, videoMounted, toggle, seek, setVolume } = usePlayer()
@@ -31,10 +32,7 @@ export function PlayerBar() {
 
         <div className="hidden flex-1 items-center gap-3 md:flex">
           <span className="w-10 text-right text-xs tabular-nums text-faint">{fmt(time)}</span>
-          <input type="range" min="0" max={total} step="0.1" value={Math.min(time, total)}
-            onChange={(e) => seek(Number(e.target.value))}
-            aria-label="Position de lecture"
-            className="h-1 flex-1 cursor-pointer appearance-none rounded-full bg-line-strong accent-accent" />
+          <SeekBar value={time} max={total} onSeek={seek} className="flex-1" />
           <span className="w-10 text-xs tabular-nums text-faint">{fmt(total)}</span>
         </div>
 
@@ -49,8 +47,11 @@ export function PlayerBar() {
         )}
       </div>
 
-      <div className="h-0.5 bg-line md:hidden">
-        <div className="h-full bg-accent" style={{ width: `${total ? (time / total) * 100 : 0}%` }} />
+      {/* Sur mobile la barre n'était qu'un filet décoratif : rien n'y était
+          déplaçable. Elle porte désormais le même contrôle que sur desktop. */}
+      <div className="flex items-center gap-2 px-4 pb-1 md:hidden">
+        <SeekBar value={time} max={total} onSeek={seek} className="flex-1" />
+        <span className="w-9 text-right text-[11px] tabular-nums text-faint">{fmt(total)}</span>
       </div>
     </div>
   )

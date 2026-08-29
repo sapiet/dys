@@ -32,3 +32,65 @@
     @apply bg-ink text-bright antialiased;
   }
 }
+
+/* Barre de progression déplaçable. On garde un `input[type=range]` natif plutôt
+   qu'un div avec des gestionnaires de pointeur : le glisser, le tactile et le
+   clavier fonctionnent sans code, et l'élément reste accessible.
+
+   `appearance: none` supprime le curseur par défaut : sans les règles
+   ci-dessous, la barre n'a ni rond ni remplissage, et rien n'indique qu'elle
+   est manipulable — c'était le cas jusqu'ici. */
+.seek {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+  /* Zone de saisie confortable au doigt, la piste visible restant fine. Le
+     décalage du curseur est relatif à la piste, pas à cette hauteur. */
+  height: 24px;
+}
+
+.seek::-webkit-slider-runnable-track {
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    to right,
+    var(--color-accent) var(--seek-progress, 0%),
+    var(--color-line-strong) var(--seek-progress, 0%)
+  );
+}
+
+.seek::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--color-bright);
+  /* Recentre le rond sur une piste de 4 px. */
+  margin-top: -4px;
+  transition: transform 120ms;
+}
+
+.seek:active::-webkit-slider-thumb {
+  transform: scale(1.25);
+}
+
+.seek::-moz-range-track {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-line-strong);
+}
+
+.seek::-moz-range-progress {
+  height: 4px;
+  border-radius: 999px;
+  background: var(--color-accent);
+}
+
+.seek::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border: 0;
+  border-radius: 50%;
+  background: var(--color-bright);
+}
