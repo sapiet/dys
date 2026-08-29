@@ -1,4 +1,4 @@
-import { readdir, stat, mkdir, copyFile } from 'node:fs/promises'
+import { readdir, stat, mkdir, copyFile, rm } from 'node:fs/promises'
 import { join, dirname, relative } from 'node:path'
 import { parsePath } from './lib/taxonomy.mjs'
 import { probe, ffmpeg } from './lib/ffmpeg.mjs'
@@ -53,6 +53,10 @@ async function buildPoster(src, dest, duration) {
 
 const files = await walk(SRC)
 const skipped = []
+// Renommer une source laisserait son ancien proxy en place, et le manifeste en
+// ferait un item fantôme. On recense les sorties attendues pour supprimer le
+// reste en fin de passe.
+const expected = new Set()
 let built = 0
 let untouched = 0
 
@@ -68,6 +72,8 @@ for (const file of files.sort()) {
   const destExt = info.hasVideo ? 'mp4' : meta.ext
   const dest = join(OUT, meta.dir, `${meta.base}.${destExt}`)
   const poster = info.hasVideo ? join(OUT, meta.dir, `${meta.base}.jpg`) : null
+  expected.add(dest)
+  if (poster) expected.add(poster)
 
   if (!(await isStale(file, dest))) {
     untouched++
@@ -106,6 +112,12 @@ for (const file of files.sort()) {
   built++
 }
 
+const orphans = (await walk(OUT).catch(() => [])).filter((f) => !expected.has(f))
+for (const orphan of orphans) {
+  console.log(`${'orphelin'.padEnd(12)} ${relative(OUT, orphan)}`)
+  if (!dry) await rm(orphan)
+}
+
 const oversized = []
 let total = 0
 for (const file of await walk(OUT)) {
@@ -114,12 +126,15 @@ for (const file of await walk(OUT)) {
   if (size > SIZE_WARN) oversized.push([relative(OUT, file), size])
 }
 
-console.log(`\n${built} traité(s), ${untouched} déjà à jour — ${(total / 1e6).toFixed(0)} Mo au total.`)
+console.log(
+  `\n${built} traité(s), ${untouched} déjà à jour, ${orphans.length} supprimé(s)`
+  + ` — ${(total / 1e6).toFixed(0)} Mo au total.`,
+)
 if (oversized.length) {
   console.log(`\nAu-dessus des 100 Mo de la limite GitHub :`)
   for (const [f, size] of oversized) console.log(`  ${(size / 1e6).toFixed(0)} Mo  ${f}`)
 }
 if (skipped.length) {
-  console.log(`\nIgnorés (hors taxonomie audio/ et playthrough/) :`)
+  console.log(`\nIgnorés (hors taxonomie) :`)
   for (const s of skipped) console.log(`  ${s}`)
 }

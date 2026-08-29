@@ -1,6 +1,6 @@
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
 import { join, relative, dirname, extname, basename } from 'node:path'
-import { parsePath, KIND_LABELS, INSTRUMENT_LABELS } from './lib/taxonomy.mjs'
+import { parsePath, labelFor, KIND_LABELS, KIND_ORDER } from './lib/taxonomy.mjs'
 import { probe } from './lib/ffmpeg.mjs'
 
 const OUT = 'public/media'
@@ -63,9 +63,8 @@ for (const file of files) {
       kind: parsed.kind,
       trackId: parsed.trackId,
       instrument: parsed.instrument,
-      label: parsed.instrument
-        ? (INSTRUMENT_LABELS[parsed.instrument] ?? parsed.instrument)
-        : KIND_LABELS[parsed.kind],
+      label: labelFor(parsed),
+      instrumentLabel: parsed.instrument ? labelFor({ kind: 'playthrough', instrument: parsed.instrument }) : null,
       duration: Math.round(info.duration),
       orientation: !info.hasVideo ? null : info.width >= info.height ? 'landscape' : 'portrait',
       poster: files.includes(join(OUT, posterRel)) ? posterRel : null,
@@ -84,8 +83,34 @@ for (const file of files) {
   existing.sources.push(source)
 }
 
-const list = [...items.values()]
+// Ordre unique, décidé ici : l'application se contente ensuite de filtrer sans
+// jamais réordonner, donc pastilles d'angle et listes restent cohérentes.
+const list = [...items.values()].sort((a, b) =>
+  a.trackId.localeCompare(b.trackId)
+  || KIND_ORDER.indexOf(a.kind) - KIND_ORDER.indexOf(b.kind)
+  || (a.instrument ?? '').localeCompare(b.instrument ?? ''),
+)
 const trackIds = [...new Set(list.map((i) => i.trackId))].sort()
+
+// Les regroupements de la vue « Médias » sont dérivés de la taxonomie plutôt
+// que reconstruits dans l'application : ajouter une nature ne demande alors
+// aucune modification côté interface.
+const groups = []
+for (const item of list) {
+  const id = item.instrument ? `${item.kind}-${item.instrument}` : item.kind
+  let group = groups.find((g) => g.id === id)
+  if (!group) {
+    group = {
+      id,
+      label: item.instrument
+        ? `${KIND_LABELS[item.kind]} — ${item.instrumentLabel}`
+        : `${KIND_LABELS[item.kind]}s`,
+      itemIds: [],
+    }
+    groups.push(group)
+  }
+  group.itemIds.push(item.id)
+}
 
 const tracks = trackIds.map((id) => {
   const own = list.filter((i) => i.trackId === id)
@@ -107,10 +132,10 @@ for (const id of Object.keys(meta.tracks ?? {})) {
 await mkdir(dirname(MANIFEST), { recursive: true })
 await writeFile(
   MANIFEST,
-  `${JSON.stringify({ baseUrl: 'media/', tracks, items: list }, null, 2)}\n`,
+  `${JSON.stringify({ baseUrl: 'media/', tracks, groups, items: list }, null, 2)}\n`,
 )
 
-console.log(`${tracks.length} morceau(x), ${list.length} item(s) -> ${MANIFEST}`)
+console.log(`${tracks.length} morceau(x), ${list.length} item(s), ${groups.length} groupe(s) -> ${MANIFEST}`)
 if (warnings.length) {
   console.log('\nAvertissements :')
   for (const w of warnings) console.log(`  ${w}`)

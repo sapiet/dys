@@ -106,18 +106,27 @@ hors des dossiers repris par la taxonomie.
 
 ### La taxonomie
 
-L'arborescence porte le sens. Elle est lue par `scripts/lib/taxonomy.mjs`, seul
-endroit où la convention est définie :
+L'arborescence porte le sens, et suit une forme unique :
 
 ```
-media/audio/<morceau>.mp3                   -> master
-media/playthrough/<instrument>/<morceau>.*  -> playthrough
+<support>/<nature>[/<instrument>]/<morceau>.<ext>
 ```
 
-Le numéro de morceau est sur deux chiffres (`01`, `02`, …). Tout chemin non
-reconnu est **ignoré et listé** en fin de traitement, jamais interprété au
-jugé — c'est ce qui permet d'ajouter les autres natures (rushes, répètes,
-shorts) une par une, sans rien casser.
+```
+media/audio/master/01.mp3                 -> master
+media/audio/backing-tracks/drums/01.mp3   -> backing track, batterie
+media/video/playthrough/bass/01.mp4       -> playthrough, basse
+```
+
+Les natures connues sont déclarées dans `scripts/lib/taxonomy.mjs`, seul
+endroit à modifier pour en ajouter une — l'interface n'a rien à savoir, les
+regroupements de la vue « Médias » étant dérivés dans le manifeste.
+
+Le numéro de morceau est sur deux chiffres. Le nombre de segments doit
+correspondre exactement : une nature à instrument rangée sans instrument, ou
+l'inverse, est **ignorée et signalée** plutôt que rattrapée au jugé. Tout
+chemin non reconnu l'est aussi — c'est ce qui permet d'ajouter les natures
+restantes (rushes, répètes, shorts) une par une, sans rien casser.
 
 ### Les commandes
 

@@ -22,13 +22,10 @@ export function getTrack(id) {
   return tracks.find((t) => t.id === id) ?? null
 }
 
-// Les angles d'un morceau, master d'abord : c'est l'entrée par défaut.
+// Les angles d'un morceau. Le manifeste les livre déjà ordonnés — master,
+// playthroughs, backing tracks — l'application ne fait que filtrer.
 export function anglesOf(trackId) {
-  const own = items.filter((i) => i.trackId === trackId)
-  return [
-    ...own.filter((i) => i.kind === 'master'),
-    ...own.filter((i) => i.kind !== 'master'),
-  ]
+  return items.filter((i) => i.trackId === trackId)
 }
 
 export function primarySource(item) {
@@ -40,19 +37,13 @@ export function isVideo(item) {
   return item.orientation !== null
 }
 
-// Les regroupements de la vue « Médias ». Un item n'existe qu'une fois dans le
-// manifeste ; ce sont des index, pas des copies.
+// Les regroupements de la vue « Médias » viennent du manifeste : ajouter une
+// nature de média ne demande aucune modification ici.
 export function groups() {
-  const out = []
-  const masters = items.filter((i) => i.kind === 'master')
-  if (masters.length) out.push({ id: 'master', label: 'Masters', items: masters })
-
-  const instruments = [...new Set(items.filter((i) => i.instrument).map((i) => i.instrument))]
-  for (const instrument of instruments.sort()) {
-    const own = items.filter((i) => i.instrument === instrument)
-    out.push({ id: `playthrough-${instrument}`, label: `Playthrough — ${own[0].label}`, items: own })
-  }
-  return out
+  return manifest.groups.map((group) => ({
+    ...group,
+    items: group.itemIds.map((id) => byId.get(id)).filter(Boolean),
+  }))
 }
 
 function slug(value) {
@@ -64,12 +55,14 @@ function slug(value) {
     .replace(/^-|-$/g, '')
 }
 
-// Un fichier téléchargé s'appelle `01.mp4` sur le disque : sans nom explicite,
-// six morceaux donnent six fichiers indiscernables.
+// Le nom du fichier téléchargé se construit sur la taxonomie, pas sur le
+// libellé d'affichage : celui-ci est traduit, et donnait des hybrides comme
+// « backing-batterie ». Les segments de l'arborescence sont déjà en anglais.
 export function downloadName(item, track) {
   const source = primarySource(item)
   const parts = ['dys', item.trackId]
   if (track && track.title !== `#${item.trackId}`) parts.push(slug(track.title))
-  parts.push(slug(item.label))
+  if (item.instrument) parts.push(item.instrument)
+  parts.push(item.kind)
   return `${parts.join('-')}.${source.format}`
 }

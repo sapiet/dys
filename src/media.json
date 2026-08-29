@@ -46,7 +46,8 @@
       "itemIds": [
         "master-04",
         "playthrough-bass-04",
-        "playthrough-guitar-left-04"
+        "playthrough-guitar-left-04",
+        "backing-track-drums-04"
       ]
     },
     {
@@ -72,6 +73,49 @@
       ]
     }
   ],
+  "groups": [
+    {
+      "id": "master",
+      "label": "Masters",
+      "itemIds": [
+        "master-01",
+        "master-02",
+        "master-03",
+        "master-04",
+        "master-05",
+        "master-06"
+      ]
+    },
+    {
+      "id": "playthrough-bass",
+      "label": "Playthrough — Bass",
+      "itemIds": [
+        "playthrough-bass-01",
+        "playthrough-bass-02",
+        "playthrough-bass-03",
+        "playthrough-bass-04"
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left",
+      "label": "Playthrough — Guitar left",
+      "itemIds": [
+        "playthrough-guitar-left-01",
+        "playthrough-guitar-left-02",
+        "playthrough-guitar-left-03",
+        "playthrough-guitar-left-04",
+        "playthrough-guitar-left-05",
+        "playthrough-guitar-left-06"
+      ]
+    },
+    {
+      "id": "backing-track-drums",
+      "label": "Backing track — Drums",
+      "itemIds": [
+        "backing-track-drums-04"
+      ]
+    }
+  ],
   "items": [
     {
       "id": "master-01",
@@ -79,16 +123,57 @@
       "trackId": "01",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 248,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/01.mp3",
+          "path": "audio/master/01.mp3",
           "bytes": 9909729,
           "width": null,
           "height": null
+        }
+      ]
+    },
+    {
+      "id": "playthrough-bass-01",
+      "kind": "playthrough",
+      "trackId": "01",
+      "instrument": "bass",
+      "label": "Bass",
+      "instrumentLabel": "Bass",
+      "duration": 248,
+      "orientation": "landscape",
+      "poster": "video/playthrough/bass/01.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/bass/01.mp4",
+          "bytes": 73719914,
+          "width": 1920,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left-01",
+      "kind": "playthrough",
+      "trackId": "01",
+      "instrument": "guitar-left",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
+      "duration": 249,
+      "orientation": "landscape",
+      "poster": "video/playthrough/guitar-left/01.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/guitar-left/01.mp4",
+          "bytes": 77104302,
+          "width": 960,
+          "height": 540
         }
       ]
     },
@@ -98,16 +183,57 @@
       "trackId": "02",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 182,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/02.mp3",
+          "path": "audio/master/02.mp3",
           "bytes": 7275541,
           "width": null,
           "height": null
+        }
+      ]
+    },
+    {
+      "id": "playthrough-bass-02",
+      "kind": "playthrough",
+      "trackId": "02",
+      "instrument": "bass",
+      "label": "Bass",
+      "instrumentLabel": "Bass",
+      "duration": 182,
+      "orientation": "landscape",
+      "poster": "video/playthrough/bass/02.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/bass/02.mp4",
+          "bytes": 53808511,
+          "width": 1920,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left-02",
+      "kind": "playthrough",
+      "trackId": "02",
+      "instrument": "guitar-left",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
+      "duration": 178,
+      "orientation": "landscape",
+      "poster": "video/playthrough/guitar-left/02.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/guitar-left/02.mp4",
+          "bytes": 55203621,
+          "width": 960,
+          "height": 540
         }
       ]
     },
@@ -117,16 +243,57 @@
       "trackId": "03",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 177,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/03.mp3",
+          "path": "audio/master/03.mp3",
           "bytes": 7091639,
           "width": null,
           "height": null
+        }
+      ]
+    },
+    {
+      "id": "playthrough-bass-03",
+      "kind": "playthrough",
+      "trackId": "03",
+      "instrument": "bass",
+      "label": "Bass",
+      "instrumentLabel": "Bass",
+      "duration": 180,
+      "orientation": "landscape",
+      "poster": "video/playthrough/bass/03.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/bass/03.mp4",
+          "bytes": 53331390,
+          "width": 1920,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left-03",
+      "kind": "playthrough",
+      "trackId": "03",
+      "instrument": "guitar-left",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
+      "duration": 179,
+      "orientation": "landscape",
+      "poster": "video/playthrough/guitar-left/03.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/guitar-left/03.mp4",
+          "bytes": 55061836,
+          "width": 960,
+          "height": 540
         }
       ]
     },
@@ -136,14 +303,75 @@
       "trackId": "04",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 192,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/04.mp3",
+          "path": "audio/master/04.mp3",
           "bytes": 7685141,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
+      "id": "playthrough-bass-04",
+      "kind": "playthrough",
+      "trackId": "04",
+      "instrument": "bass",
+      "label": "Bass",
+      "instrumentLabel": "Bass",
+      "duration": 192,
+      "orientation": "landscape",
+      "poster": "video/playthrough/bass/04.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/bass/04.mp4",
+          "bytes": 56178533,
+          "width": 1920,
+          "height": 1080
+        }
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left-04",
+      "kind": "playthrough",
+      "trackId": "04",
+      "instrument": "guitar-left",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
+      "duration": 193,
+      "orientation": "landscape",
+      "poster": "video/playthrough/guitar-left/04.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/guitar-left/04.mp4",
+          "bytes": 59135468,
+          "width": 960,
+          "height": 540
+        }
+      ]
+    },
+    {
+      "id": "backing-track-drums-04",
+      "kind": "backing-track",
+      "trackId": "04",
+      "instrument": "drums",
+      "label": "Drums backing track",
+      "instrumentLabel": "Drums",
+      "duration": 188,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/backing-tracks/drums/04.mp3",
+          "bytes": 4269975,
           "width": null,
           "height": null
         }
@@ -155,16 +383,37 @@
       "trackId": "05",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 256,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/05.mp3",
+          "path": "audio/master/05.mp3",
           "bytes": 10256635,
           "width": null,
           "height": null
+        }
+      ]
+    },
+    {
+      "id": "playthrough-guitar-left-05",
+      "kind": "playthrough",
+      "trackId": "05",
+      "instrument": "guitar-left",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
+      "duration": 256,
+      "orientation": "landscape",
+      "poster": "video/playthrough/guitar-left/05.jpg",
+      "sources": [
+        {
+          "format": "mp4",
+          "path": "video/playthrough/guitar-left/05.mp4",
+          "bytes": 78924671,
+          "width": 960,
+          "height": 540
         }
       ]
     },
@@ -174,187 +423,17 @@
       "trackId": "06",
       "instrument": null,
       "label": "Master",
+      "instrumentLabel": null,
       "duration": 188,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
-          "path": "audio/06.mp3",
+          "path": "audio/master/06.mp3",
           "bytes": 7541990,
           "width": null,
           "height": null
-        }
-      ]
-    },
-    {
-      "id": "playthrough-bass-01",
-      "kind": "playthrough",
-      "trackId": "01",
-      "instrument": "bass",
-      "label": "Basse",
-      "duration": 248,
-      "orientation": "landscape",
-      "poster": "playthrough/bass/01.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/bass/01.mp4",
-          "bytes": 73719914,
-          "width": 1920,
-          "height": 1080
-        }
-      ]
-    },
-    {
-      "id": "playthrough-bass-02",
-      "kind": "playthrough",
-      "trackId": "02",
-      "instrument": "bass",
-      "label": "Basse",
-      "duration": 182,
-      "orientation": "landscape",
-      "poster": "playthrough/bass/02.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/bass/02.mp4",
-          "bytes": 53808511,
-          "width": 1920,
-          "height": 1080
-        }
-      ]
-    },
-    {
-      "id": "playthrough-bass-03",
-      "kind": "playthrough",
-      "trackId": "03",
-      "instrument": "bass",
-      "label": "Basse",
-      "duration": 180,
-      "orientation": "landscape",
-      "poster": "playthrough/bass/03.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/bass/03.mp4",
-          "bytes": 53331390,
-          "width": 1920,
-          "height": 1080
-        }
-      ]
-    },
-    {
-      "id": "playthrough-bass-04",
-      "kind": "playthrough",
-      "trackId": "04",
-      "instrument": "bass",
-      "label": "Basse",
-      "duration": 192,
-      "orientation": "landscape",
-      "poster": "playthrough/bass/04.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/bass/04.mp4",
-          "bytes": 56178533,
-          "width": 1920,
-          "height": 1080
-        }
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left-01",
-      "kind": "playthrough",
-      "trackId": "01",
-      "instrument": "guitar-left",
-      "label": "Guitare gauche",
-      "duration": 249,
-      "orientation": "landscape",
-      "poster": "playthrough/guitar-left/01.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/guitar-left/01.mp4",
-          "bytes": 77104302,
-          "width": 960,
-          "height": 540
-        }
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left-02",
-      "kind": "playthrough",
-      "trackId": "02",
-      "instrument": "guitar-left",
-      "label": "Guitare gauche",
-      "duration": 178,
-      "orientation": "landscape",
-      "poster": "playthrough/guitar-left/02.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/guitar-left/02.mp4",
-          "bytes": 55203621,
-          "width": 960,
-          "height": 540
-        }
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left-03",
-      "kind": "playthrough",
-      "trackId": "03",
-      "instrument": "guitar-left",
-      "label": "Guitare gauche",
-      "duration": 179,
-      "orientation": "landscape",
-      "poster": "playthrough/guitar-left/03.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/guitar-left/03.mp4",
-          "bytes": 55061836,
-          "width": 960,
-          "height": 540
-        }
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left-04",
-      "kind": "playthrough",
-      "trackId": "04",
-      "instrument": "guitar-left",
-      "label": "Guitare gauche",
-      "duration": 193,
-      "orientation": "landscape",
-      "poster": "playthrough/guitar-left/04.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/guitar-left/04.mp4",
-          "bytes": 59135468,
-          "width": 960,
-          "height": 540
-        }
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left-05",
-      "kind": "playthrough",
-      "trackId": "05",
-      "instrument": "guitar-left",
-      "label": "Guitare gauche",
-      "duration": 256,
-      "orientation": "landscape",
-      "poster": "playthrough/guitar-left/05.jpg",
-      "sources": [
-        {
-          "format": "mp4",
-          "path": "playthrough/guitar-left/05.mp4",
-          "bytes": 78924671,
-          "width": 960,
-          "height": 540
         }
       ]
     },
@@ -363,14 +442,15 @@
       "kind": "playthrough",
       "trackId": "06",
       "instrument": "guitar-left",
-      "label": "Guitare gauche",
+      "label": "Guitar left",
+      "instrumentLabel": "Guitar left",
       "duration": 183,
       "orientation": "landscape",
-      "poster": "playthrough/guitar-left/06.jpg",
+      "poster": "video/playthrough/guitar-left/06.jpg",
       "sources": [
         {
           "format": "mp4",
-          "path": "playthrough/guitar-left/06.mp4",
+          "path": "video/playthrough/guitar-left/06.mp4",
           "bytes": 53291930,
           "width": 1920,
           "height": 1080
