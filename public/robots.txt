@@ -1,9 +1,9 @@
-# L'exploration est autorisée, et c'est délibéré : un `Disallow` empêcherait
-# aussi les robots d'aperçu (Slack, Discord, Facebook, LinkedIn, WhatsApp) de
-# lire la page, et les liens partagés n'auraient aucune vignette.
+# Exploration autorisée, délibérément : les robots d'aperçu (Slack, Discord,
+# Facebook, LinkedIn, WhatsApp) respectent ce fichier, et un `Disallow` les
+# empêcherait de lire la page. Les liens partagés n'auraient aucune vignette.
 #
-# L'indexation est bloquée par la balise `noindex` de index.html. C'est le
-# mécanisme correct : un robot doit pouvoir lire la page pour y voir le
-# `noindex`, ce qu'un `Disallow` lui interdisait justement.
+# Le `noindex` a été retiré de index.html pour la même raison. Le site est donc
+# indexable : sa discrétion ne repose plus que sur le fait que l'URL n'est pas
+# diffusée.
 User-agent: *
 Allow: /

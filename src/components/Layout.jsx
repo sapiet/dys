@@ -1,3 +1,4 @@
+import { InstallBanner } from './InstallBanner'
 import { tracks } from '../lib/media'
 import { duration } from '../lib/format'
 
@@ -55,7 +56,10 @@ export function Layout({ route, children }) {
         </div>
       </aside>
 
-      <main className="mx-auto max-w-4xl px-5 py-6 md:ml-56 md:px-8 md:py-9">{children}</main>
+      <main className="mx-auto max-w-4xl px-5 py-6 md:ml-56 md:px-8 md:py-9">
+        <InstallBanner />
+        {children}
+      </main>
 
       <nav className="fixed inset-x-0 bottom-0 z-20 flex border-t border-line bg-ink pb-[env(safe-area-inset-bottom)] md:hidden">
         {NAV.map((entry) => (
