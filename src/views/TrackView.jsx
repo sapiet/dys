@@ -67,12 +67,7 @@ export function TrackView({ trackId }) {
         )}
       </div>
 
-      <div className="mt-3 flex items-center justify-between gap-3">
-        <p className="text-xs text-faint">
-          {angles.length > 1
-            ? 'Changer d’angle conserve la position de lecture.'
-            : 'Un seul angle enregistré pour ce morceau.'}
-        </p>
+      <div className="mt-3 flex justify-end">
         <DownloadButton item={selected} label />
       </div>
 
