@@ -20,7 +20,14 @@ export function DownloadButton({ item, label = false }) {
         strokeLinecap="round" strokeLinejoin="round" className="size-[18px]" aria-hidden="true">
         <path d={ICON} />
       </svg>
-      {label && <span>Télécharger · {megabytes(source.bytes)}</span>}
+      {/* Le verbe est superflu à côté de l'icône, et la place manque sur mobile.
+          `aria-label` porte l'intention pour les lecteurs d'écran. */}
+      {label && (
+        <span>
+          <span className="hidden sm:inline">Télécharger · </span>
+          {megabytes(source.bytes)}
+        </span>
+      )}
     </a>
   )
 }

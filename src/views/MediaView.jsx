@@ -86,7 +86,7 @@ export function MediaView() {
           </div>
           <div className="mt-2 flex items-center justify-between gap-3">
             <p className="text-xs text-faint">
-              {getTrack(current.trackId)?.title} · {current.label} — enchaînement en boucle sur les {group.items.length} morceaux
+              {getTrack(current.trackId)?.title} · {current.label}
             </p>
             <DownloadButton item={current} label />
           </div>
