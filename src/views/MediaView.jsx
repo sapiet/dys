@@ -26,10 +26,12 @@ export function MediaView() {
 
   return (
     <>
-      <header className="mb-6 text-center">
-        <h1 className="sr-only">Drown Your Sorrows</h1>
-        <img src={`${import.meta.env.BASE_URL}image/logo-wide.jpg`} alt=""
-          className="mx-auto w-full max-w-52 mix-blend-screen sm:max-w-sm" />
+      <header className="mb-6 text-center md:mb-5 md:text-left">
+        {/* Sur desktop le logo est déjà au-dessus du menu : le répéter ici
+            ferait doublon, le titre texte prend le relais. */}
+        <img src={`${import.meta.env.BASE_URL}image/logo-wide.jpg`} alt="Drown Your Sorrows"
+          className="mx-auto w-full max-w-52 mix-blend-screen sm:max-w-sm md:hidden" />
+        <h1 className="sr-only md:not-sr-only md:text-2xl md:font-medium md:tracking-tight">Médias</h1>
       </header>
 
       <div className="mb-5 flex flex-wrap gap-2">
