@@ -19,7 +19,7 @@
       "number": 2,
       "title": "#02",
       "notes": null,
-      "duration": 182,
+      "duration": 186,
       "itemIds": [
         "master-02",
         "playthrough-bass-02",
@@ -229,14 +229,14 @@
       "instrument": null,
       "label": "Master",
       "instrumentLabel": null,
-      "duration": 182,
+      "duration": 186,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
           "path": "audio/master/02.mp3",
-          "bytes": 7275541,
+          "bytes": 3726022,
           "width": null,
           "height": null
         }
