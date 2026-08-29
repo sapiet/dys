@@ -32,7 +32,7 @@ export default defineConfig({
         // Volontairement identique à `name` : « DYS » n'évoquait rien sur
         // l'écran d'accueil. iOS tronquera l'affichage, pas le nom.
         short_name: 'Drown Your Sorrows',
-        description: 'Compositions, playthroughs et captations.',
+        description: 'Compositions, playthroughs et backing tracks.',
         lang: 'fr',
         start_url: BASE,
         scope: BASE,
