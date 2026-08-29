@@ -569,14 +569,14 @@
       "instrument": "drums",
       "label": "Drums backing track",
       "instrumentLabel": "Drums",
-      "duration": 218,
+      "duration": 219,
       "orientation": null,
       "poster": null,
       "sources": [
         {
           "format": "mp3",
           "path": "audio/backing-tracks/drums/06.mp3",
-          "bytes": 4364978,
+          "bytes": 4390055,
           "width": null,
           "height": null
         }
