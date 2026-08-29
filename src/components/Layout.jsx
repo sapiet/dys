@@ -56,7 +56,9 @@ export function Layout({ route, children }) {
         </div>
       </aside>
 
-      <main className="mx-auto max-w-4xl px-5 py-6 md:ml-56 md:px-8 md:py-9">
+      {/* Retraits horizontaux tenus identiques à ceux de la barre de lecture :
+          un écart, même de 4 px, se voit sur la colonne de gauche. */}
+      <main className="mx-auto max-w-4xl px-4 py-6 md:ml-56 md:px-6 md:py-9">
         <InstallBanner />
         {children}
       </main>

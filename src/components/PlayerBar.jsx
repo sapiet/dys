@@ -11,7 +11,7 @@ export function PlayerBar() {
 
   return (
     <div className="fixed inset-x-0 bottom-[57px] z-30 border-t border-line bg-panel md:bottom-0">
-      <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2.5 md:ml-56 md:max-w-none md:gap-4 md:px-8">
+      <div className="mx-auto flex max-w-4xl items-center gap-3 px-4 py-2.5 md:ml-56 md:max-w-none md:gap-4 md:px-6">
         <button onClick={toggle} aria-label={playing ? 'Pause' : 'Lecture'}
           className="grid size-9 shrink-0 place-items-center rounded-full text-bright transition-colors hover:bg-surface">
           <svg viewBox="0 0 24 24" fill="currentColor" className="size-5" aria-hidden="true">
