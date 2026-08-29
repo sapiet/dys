@@ -91,8 +91,15 @@ bandeau ne peut qu'indiquer le geste, et le chemin de menu diffère : « bouton
 Partager » dans Safari, « menu ⋯ » dans Chrome, Firefox ou Edge. Il est donc
 détecté, une consigne erronée n'étant pas plus utile qu'aucune consigne.
 
-Safari reste la voie sûre pour obtenir une vraie fenêtre autonome ; le bandeau
-le mentionne dans les autres navigateurs.
+Vérifié sur appareil : Chrome sur iOS produit bien une application autonome,
+sans barre d'adresse — contrairement à ce qu'on lit souvent.
+
+Le nom affiché sous l'icône vient de `apple-mobile-web-app-title` sur iOS, qui
+prime sur le manifeste, et de `short_name` ailleurs. Les deux valent
+« Drown Your Sorrows ». **iOS tronque l'affichage** au-delà d'une douzaine de
+caractères : l'icône montrera « Drown Your… ». Renommer plus tard n'affecte pas
+les icônes déjà posées, iOS ne les met pas à jour — il faut les supprimer et
+les réinstaller.
 
 ### Mise à jour
 

@@ -29,7 +29,9 @@ export default defineConfig({
       manifest: {
         id: BASE,
         name: 'Drown Your Sorrows',
-        short_name: 'DYS',
+        // Volontairement identique à `name` : « DYS » n'évoquait rien sur
+        // l'écran d'accueil. iOS tronquera l'affichage, pas le nom.
+        short_name: 'Drown Your Sorrows',
         description: 'Compositions, playthroughs et captations.',
         lang: 'fr',
         start_url: BASE,

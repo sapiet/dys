@@ -61,9 +61,6 @@ export function InstallBanner() {
             Ajoute le site à ton écran d’accueil :{' '}
             <span className="text-bright">{IOS_MENU[iosBrowser] ?? IOS_MENU.safari}</span>,
             puis <span className="text-bright">Sur l’écran d’accueil</span>.
-            {iosBrowser !== 'safari' && (
-              <span className="text-faint"> Depuis Safari, l’application s’ouvrira en fenêtre autonome.</span>
-            )}
           </>
         ) : (
           <>Installe le site comme une application, pour y accéder sans passer par le navigateur.</>
