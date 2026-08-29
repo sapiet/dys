@@ -17,8 +17,8 @@ export function useHashRoute() {
   const [, head, param] = path.split('/')
 
   if (head === 'track' && param) return { name: 'track', trackId: param }
-  if (head === 'types') return { name: 'types' }
-  return { name: 'tracks' }
+  if (head === 'tracks') return { name: 'tracks' }
+  return { name: 'media' }
 }
 
 export function href(path) {

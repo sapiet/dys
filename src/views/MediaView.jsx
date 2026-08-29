@@ -2,25 +2,34 @@ import { useState } from 'react'
 import { groups, getTrack, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration } from '../lib/format'
+import { DownloadButton } from '../components/DownloadButton'
 
-export function TypesView() {
+// Le fond du logo est écrasé en noir pur à la génération : `screen` le fait
+// alors disparaître sans masque, et le halo bleu — qu'un détourage aurait
+// mangé — est préservé.
+export function MediaView() {
   const all = groups()
   const [active, setActive] = useState(all[0]?.id ?? null)
-  const { play, current, playing, setVideoEl } = usePlayer()
+  const { play, toggle, current, playing, setVideoEl } = usePlayer()
   const group = all.find((g) => g.id === active)
 
   // La file, c'est le groupe affiché : la lecture enchaîne les morceaux dans
-  // l'ordre et reprend au premier une fois le dernier terminé.
-  const start = (item) => play(item, { queue: group.items.map((i) => i.id) })
+  // l'ordre et reprend au premier une fois le dernier terminé. Recliquer la
+  // ligne déjà active met en pause plutôt que de relancer depuis le début.
+  const start = (item) => {
+    if (current?.id === item.id) toggle()
+    else play(item, { queue: group.items.map((i) => i.id) })
+  }
 
   const inGroup = group?.items.some((i) => i.id === current?.id)
   const onStage = inGroup && current && isVideo(current)
 
   return (
     <>
-      <header className="mb-5">
-        <h1 className="text-2xl font-medium tracking-tight">Types</h1>
-        <p className="mt-1 text-sm text-faint">Les mêmes médias, rangés par nature</p>
+      <header className="mb-6 text-center">
+        <h1 className="sr-only">Drown Your Sorrows</h1>
+        <img src={`${import.meta.env.BASE_URL}image/logo-wide.jpg`} alt=""
+          className="mx-auto w-full max-w-52 mix-blend-screen sm:max-w-sm" />
       </header>
 
       <div className="mb-5 flex flex-wrap gap-2">
@@ -43,9 +52,12 @@ export function TypesView() {
               poster={current.poster ? resolveUrl(current.poster) : undefined}
               className="size-full" />
           </div>
-          <p className="mt-2 text-xs text-faint">
-            {getTrack(current.trackId)?.title} · {current.label} — enchaînement en boucle sur les {group.items.length} morceaux
-          </p>
+          <div className="mt-2 flex items-center justify-between gap-3">
+            <p className="text-xs text-faint">
+              {getTrack(current.trackId)?.title} · {current.label} — enchaînement en boucle sur les {group.items.length} morceaux
+            </p>
+            <DownloadButton item={current} label />
+          </div>
         </div>
       )}
 
@@ -53,10 +65,12 @@ export function TypesView() {
         {group?.items.map((item) => {
           const isCurrent = current?.id === item.id
           return (
-            <button key={item.id} onClick={() => start(item)}
-              className={`flex items-center gap-3 px-3 py-2.5 text-left transition-colors hover:bg-surface ${
+            <div key={item.id}
+              className={`flex items-center gap-3 pr-2 transition-colors hover:bg-surface ${
                 isCurrent ? 'bg-surface' : ''
               }`}>
+              <button onClick={() => start(item)}
+                className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left">
               <div className="relative grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-md bg-raised">
                 {item.poster
                   ? <img src={resolveUrl(item.poster)} alt="" className={`size-full object-cover ${isCurrent ? 'opacity-50' : ''}`} />
@@ -76,14 +90,12 @@ export function TypesView() {
                   {isVideo(item) && ` · ${item.sources[0].height}p`}
                 </p>
               </div>
-            </button>
+              </button>
+              <DownloadButton item={item} />
+            </div>
           )
         })}
       </div>
-
-      <p className="mt-3 text-xs text-faint">
-        La lecture enchaîne les morceaux de la liste et reprend au premier après le dernier.
-      </p>
     </>
   )
 }

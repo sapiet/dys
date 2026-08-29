@@ -40,7 +40,7 @@ export function isVideo(item) {
   return item.orientation !== null
 }
 
-// Les regroupements de la vue « Types ». Un item n'existe qu'une fois dans le
+// Les regroupements de la vue « Médias ». Un item n'existe qu'une fois dans le
 // manifeste ; ce sont des index, pas des copies.
 export function groups() {
   const out = []
@@ -53,4 +53,23 @@ export function groups() {
     out.push({ id: `playthrough-${instrument}`, label: `Playthrough — ${own[0].label}`, items: own })
   }
   return out
+}
+
+function slug(value) {
+  return value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+// Un fichier téléchargé s'appelle `01.mp4` sur le disque : sans nom explicite,
+// six morceaux donnent six fichiers indiscernables.
+export function downloadName(item, track) {
+  const source = primarySource(item)
+  const parts = ['dys', item.trackId]
+  if (track && track.title !== `#${item.trackId}`) parts.push(slug(track.title))
+  parts.push(slug(item.label))
+  return `${parts.join('-')}.${source.format}`
 }

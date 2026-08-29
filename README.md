@@ -27,7 +27,7 @@ une vraie URL renverrait un 404.
 src/lib/media.js          index dérivés du manifeste, résolution des URLs
 src/lib/useHashRoute.js   routage
 src/player/               état de lecture partagé
-src/views/                Morceaux, Morceau, Types
+src/views/                Médias (accueil), Morceaux, Morceau
 src/components/           coquille responsive, barre de lecture
 ```
 
@@ -49,7 +49,7 @@ fois.
 
 ### La file de lecture
 
-Lancer un média depuis la vue « Types » prend le groupe affiché comme file :
+Lancer un média depuis la vue « Médias » prend le groupe affiché comme file :
 à la fin d'un morceau la lecture enchaîne sur le suivant, et reprend au premier
 après le dernier. Les playthroughs disposent pour cela de leur propre surface
 vidéo dans cette vue — on ne quitte pas la page.

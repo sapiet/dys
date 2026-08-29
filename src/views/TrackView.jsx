@@ -1,6 +1,7 @@
 import { getTrack, anglesOf, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, megabytes } from '../lib/format'
+import { DownloadButton } from '../components/DownloadButton'
 
 export function TrackView({ trackId }) {
   const track = getTrack(trackId)
@@ -66,11 +67,14 @@ export function TrackView({ trackId }) {
         )}
       </div>
 
-      <p className="mt-3 text-xs text-faint">
-        {angles.length > 1
-          ? 'Changer d’angle conserve la position de lecture.'
-          : 'Un seul angle enregistré pour ce morceau.'}
-      </p>
+      <div className="mt-3 flex items-center justify-between gap-3">
+        <p className="text-xs text-faint">
+          {angles.length > 1
+            ? 'Changer d’angle conserve la position de lecture.'
+            : 'Un seul angle enregistré pour ce morceau.'}
+        </p>
+        <DownloadButton item={selected} label />
+      </div>
 
       <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 border-t border-line pt-5 text-sm sm:grid-cols-4">
         <div>

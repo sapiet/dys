@@ -1,22 +1,26 @@
 @import 'tailwindcss';
 
 /* Le site n'existe qu'en sombre : la palette est définie une fois ici plutôt
-   que dupliquée en variantes `dark:` sur chaque élément. */
+   que dupliquée en variantes `dark:` sur chaque élément.
+
+   Les teintes sont dérivées du logo : un cobalt échantillonné à ~216° sur son
+   halo, et des neutres refroidis vers le même bleu plutôt que gris purs, pour
+   que le lettrage ne détonne pas sur la page. */
 @theme {
-  --color-ink: #0e0e13;
-  --color-panel: #131319;
-  --color-surface: #16161e;
-  --color-raised: #1c1c26;
-  --color-line: #26262f;
-  --color-line-strong: #33333f;
+  --color-ink: #090c12;
+  --color-panel: #0d1119;
+  --color-surface: #111621;
+  --color-raised: #171e2b;
+  --color-line: #1e2634;
+  --color-line-strong: #2b3547;
 
-  --color-bright: #e8e8ef;
-  --color-dim: #a0a0b5;
-  --color-faint: #6f6f85;
+  --color-bright: #e6ebf3;
+  --color-dim: #98a3b6;
+  --color-faint: #626d82;
 
-  --color-accent: #6d5ee8;
-  --color-accent-soft: #1e1b33;
-  --color-accent-text: #b7aef5;
+  --color-accent: #2563c9;
+  --color-accent-soft: #13203a;
+  --color-accent-text: #8ab4f0;
 }
 
 @layer base {

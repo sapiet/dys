@@ -2,8 +2,8 @@ import { tracks } from '../lib/media'
 import { duration } from '../lib/format'
 
 const NAV = [
-  { path: '/', name: 'tracks', label: 'Morceaux', icon: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' },
-  { path: '/types', name: 'types', label: 'Types', icon: 'M4 6h16M4 12h16M4 18h16' },
+  { path: '/', name: 'media', label: 'Médias', icon: 'M4 6h16M4 12h16M4 18h16' },
+  { path: '/tracks', name: 'tracks', label: 'Morceaux', icon: 'M9 18V5l12-2v13M9 18a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm12-2a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z' },
 ]
 
 function Icon({ path, className = 'size-5' }) {
@@ -18,8 +18,14 @@ function Icon({ path, className = 'size-5' }) {
 export function Layout({ route, children }) {
   return (
     <div className="min-h-dvh pb-36 md:pb-24">
-      <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 flex-col border-r border-line px-3 py-5 md:flex">
-        <a href="#/" className="px-2 pb-5 text-lg font-medium tracking-tight">dys</a>
+      {/* `bg-ink` explicite : l'aside est un contexte d'empilement (fixed + z-index),
+          donc le `mix-blend-screen` du logo se mélange à ce fond-là, pas à celui
+          du body. Sans lui, le noir du logo reste opaque. */}
+      <aside className="fixed inset-y-0 left-0 z-20 hidden w-56 flex-col border-r border-line bg-ink px-3 py-5 md:flex">
+        <a href="#/" className="block px-1 pb-4">
+          <img src={`${import.meta.env.BASE_URL}image/logo-wide.jpg`} alt="Drown Your Sorrows"
+            className="w-full mix-blend-screen" />
+        </a>
 
         <nav className="flex flex-col gap-0.5">
           {NAV.map((entry) => (
