@@ -1,7 +1,17 @@
 import { useEffect, useState, useSyncExternalStore } from 'react'
-import { subscribe, canInstall, promptInstall, isIOSSafari, isInstalled } from '../pwa/install'
+import { subscribe, canInstall, promptInstall, isIOS, iosBrowser, isInstalled } from '../pwa/install'
 
 const KEY = 'dys.install-dismissed'
+
+// Le geste diffère d'un navigateur iOS à l'autre. Donner le mauvais chemin de
+// menu est aussi inutile que de ne rien afficher du tout.
+const IOS_MENU = {
+  safari: 'bouton Partager',
+  chrome: 'menu ⋯ de Chrome',
+  firefox: 'menu ⋯ de Firefox',
+  edge: 'menu ⋯ d’Edge',
+  opera: 'menu d’Opera',
+}
 
 // Le stockage lève en navigation privée sur certains navigateurs : un refus de
 // mémoriser ne doit pas empêcher la page de s'afficher.
@@ -26,7 +36,7 @@ export function InstallBanner() {
   }, [])
 
   if (installed || dismissed) return null
-  if (!installable && !isIOSSafari) return null
+  if (!installable && !isIOS) return null
 
   const close = () => {
     setDismissed(true)
@@ -46,10 +56,14 @@ export function InstallBanner() {
       </svg>
 
       <p className="min-w-0 flex-1 text-sm text-dim">
-        {isIOSSafari && !installable ? (
+        {isIOS && !installable ? (
           <>
-            Ajoute le site à ton écran d’accueil : bouton <span className="text-bright">Partager</span>,
+            Ajoute le site à ton écran d’accueil :{' '}
+            <span className="text-bright">{IOS_MENU[iosBrowser] ?? IOS_MENU.safari}</span>,
             puis <span className="text-bright">Sur l’écran d’accueil</span>.
+            {iosBrowser !== 'safari' && (
+              <span className="text-faint"> Depuis Safari, l’application s’ouvrira en fenêtre autonome.</span>
+            )}
           </>
         ) : (
           <>Installe le site comme une application, pour y accéder sans passer par le navigateur.</>

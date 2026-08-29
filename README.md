@@ -83,8 +83,16 @@ cache reste à 1 Mo après lecture.
 
 ### Installation
 
-Android et desktop proposent l'installation spontanément. **iOS ne le fait
-pas** : il faut passer par « Partager → Sur l'écran d'accueil » dans Safari.
+Android et desktop proposent l'installation via `beforeinstallprompt`, capté par
+`src/pwa/install.js` et relayé par un bandeau en tête de contenu.
+
+**iOS n'expose aucune API d'installation, quel que soit le navigateur.** Le
+bandeau ne peut qu'indiquer le geste, et le chemin de menu diffère : « bouton
+Partager » dans Safari, « menu ⋯ » dans Chrome, Firefox ou Edge. Il est donc
+détecté, une consigne erronée n'étant pas plus utile qu'aucune consigne.
+
+Safari reste la voie sûre pour obtenir une vraie fenêtre autonome ; le bandeau
+le mentionne dans les autres navigateurs.
 
 ### Mise à jour
 

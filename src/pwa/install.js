@@ -46,12 +46,18 @@ const ua = typeof navigator === 'undefined' ? '' : navigator.userAgent
 
 // iPadOS 13+ se déclare comme un Mac : seul le nombre de points tactiles le
 // distingue d'un ordinateur de bureau.
-const isIOS = /iphone|ipad|ipod/i.test(ua)
+export const isIOS = /iphone|ipad|ipod/i.test(ua)
   || (/macintosh/i.test(ua) && typeof navigator !== 'undefined' && navigator.maxTouchPoints > 1)
 
-// Les navigateurs tiers sur iOS n'installent pas de PWA : leur « sur l'écran
-// d'accueil » crée un simple raccourci. Leur donner la consigne serait faux.
-export const isIOSSafari = isIOS && !/crios|fxios|edgios|opios/i.test(ua)
+// iOS n'expose aucune API d'installation, quel que soit le navigateur : on ne
+// peut qu'indiquer le geste. Le chemin de menu diffère selon l'application, et
+// se tromper de consigne est aussi inutile que de n'en donner aucune.
+export const iosBrowser = !isIOS ? null
+  : /crios/i.test(ua) ? 'chrome'
+  : /fxios/i.test(ua) ? 'firefox'
+  : /edgios/i.test(ua) ? 'edge'
+  : /opios/i.test(ua) ? 'opera'
+  : 'safari'
 
 export function isInstalled() {
   if (typeof window === 'undefined') return false
