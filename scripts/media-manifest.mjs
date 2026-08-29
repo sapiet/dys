@@ -92,24 +92,29 @@ const list = [...items.values()].sort((a, b) =>
 )
 const trackIds = [...new Set(list.map((i) => i.trackId))].sort()
 
-// Les regroupements de la vue « Médias » sont dérivés de la taxonomie plutôt
-// que reconstruits dans l'application : ajouter une nature ne demande alors
-// aucune modification côté interface.
+// Les regroupements de la vue « Médias » sont imbriqués : la nature d'abord,
+// l'instrument ensuite. À plat, leur nombre serait multiplicatif — une pastille
+// par couple nature × instrument, et « Playthrough » répété autant de fois.
 const groups = []
 for (const item of list) {
-  const id = item.instrument ? `${item.kind}-${item.instrument}` : item.kind
-  let group = groups.find((g) => g.id === id)
-  if (!group) {
-    group = {
-      id,
-      label: item.instrument
-        ? `${KIND_LABELS[item.kind]} — ${item.instrumentLabel}`
-        : `${KIND_LABELS[item.kind]}s`,
-      itemIds: [],
-    }
-    groups.push(group)
+  let nature = groups.find((g) => g.id === item.kind)
+  if (!nature) {
+    nature = { id: item.kind, label: `${KIND_LABELS[item.kind]}s`, itemIds: [], children: [] }
+    groups.push(nature)
   }
-  group.itemIds.push(item.id)
+
+  if (!item.instrument) {
+    nature.itemIds.push(item.id)
+    continue
+  }
+
+  const childId = `${item.kind}-${item.instrument}`
+  let child = nature.children.find((c) => c.id === childId)
+  if (!child) {
+    child = { id: childId, label: item.instrumentLabel, itemIds: [] }
+    nature.children.push(child)
+  }
+  child.itemIds.push(item.id)
 }
 
 const tracks = trackIds.map((id) => {

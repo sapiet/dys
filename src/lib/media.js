@@ -37,12 +37,14 @@ export function isVideo(item) {
   return item.orientation !== null
 }
 
-// Les regroupements de la vue « Médias » viennent du manifeste : ajouter une
-// nature de média ne demande aucune modification ici.
+// Les regroupements viennent du manifeste, imbriqués : nature puis instrument.
+// Ajouter une nature ou un instrument ne demande donc rien ici.
 export function groups() {
-  return manifest.groups.map((group) => ({
-    ...group,
-    items: group.itemIds.map((id) => byId.get(id)).filter(Boolean),
+  const resolve = (ids) => ids.map((id) => byId.get(id)).filter(Boolean)
+  return manifest.groups.map((nature) => ({
+    ...nature,
+    items: resolve(nature.itemIds),
+    children: nature.children.map((child) => ({ ...child, items: resolve(child.itemIds) })),
   }))
 }
 

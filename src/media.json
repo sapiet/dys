@@ -84,35 +84,50 @@
         "master-04",
         "master-05",
         "master-06"
+      ],
+      "children": []
+    },
+    {
+      "id": "playthrough",
+      "label": "Playthroughs",
+      "itemIds": [],
+      "children": [
+        {
+          "id": "playthrough-bass",
+          "label": "Bass",
+          "itemIds": [
+            "playthrough-bass-01",
+            "playthrough-bass-02",
+            "playthrough-bass-03",
+            "playthrough-bass-04"
+          ]
+        },
+        {
+          "id": "playthrough-guitar-left",
+          "label": "Guitar left",
+          "itemIds": [
+            "playthrough-guitar-left-01",
+            "playthrough-guitar-left-02",
+            "playthrough-guitar-left-03",
+            "playthrough-guitar-left-04",
+            "playthrough-guitar-left-05",
+            "playthrough-guitar-left-06"
+          ]
+        }
       ]
     },
     {
-      "id": "playthrough-bass",
-      "label": "Playthrough — Bass",
-      "itemIds": [
-        "playthrough-bass-01",
-        "playthrough-bass-02",
-        "playthrough-bass-03",
-        "playthrough-bass-04"
-      ]
-    },
-    {
-      "id": "playthrough-guitar-left",
-      "label": "Playthrough — Guitar left",
-      "itemIds": [
-        "playthrough-guitar-left-01",
-        "playthrough-guitar-left-02",
-        "playthrough-guitar-left-03",
-        "playthrough-guitar-left-04",
-        "playthrough-guitar-left-05",
-        "playthrough-guitar-left-06"
-      ]
-    },
-    {
-      "id": "backing-track-drums",
-      "label": "Backing track — Drums",
-      "itemIds": [
-        "backing-track-drums-04"
+      "id": "backing-track",
+      "label": "Backing tracks",
+      "itemIds": [],
+      "children": [
+        {
+          "id": "backing-track-drums",
+          "label": "Drums",
+          "itemIds": [
+            "backing-track-drums-04"
+          ]
+        }
       ]
     }
   ],

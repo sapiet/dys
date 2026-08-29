@@ -9,9 +9,20 @@ import { DownloadButton } from '../components/DownloadButton'
 // mangé — est préservé.
 export function MediaView() {
   const all = groups()
-  const [active, setActive] = useState(all[0]?.id ?? null)
+  const [natureId, setNatureId] = useState(all[0]?.id ?? null)
+  // Choisir une nature sélectionne son premier instrument : sans ça, « Playthroughs »
+  // n'afficherait rien tant qu'on n'aurait pas cliqué une seconde fois.
+  const [childId, setChildId] = useState(all[0]?.children?.[0]?.id ?? null)
   const { play, toggle, current, playing, setVideoEl } = usePlayer()
-  const group = all.find((g) => g.id === active)
+
+  const nature = all.find((g) => g.id === natureId)
+  const child = nature?.children.find((c) => c.id === childId) ?? nature?.children[0]
+  const group = child ?? nature
+
+  const selectNature = (next) => {
+    setNatureId(next.id)
+    setChildId(next.children[0]?.id ?? null)
+  }
 
   // La file, c'est le groupe affiché : la lecture enchaîne les morceaux dans
   // l'ordre et reprend au premier une fois le dernier terminé. Recliquer la
@@ -34,17 +45,36 @@ export function MediaView() {
         <h1 className="sr-only md:not-sr-only md:text-2xl md:font-medium md:tracking-tight">Médias</h1>
       </header>
 
-      <div className="mb-5 flex flex-wrap gap-2">
-        {all.map((g) => (
-          <button key={g.id} onClick={() => setActive(g.id)}
-            className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
-              g.id === active
-                ? 'bg-accent text-white'
-                : 'border border-line-strong text-dim hover:text-bright'
-            }`}>
-            {g.label}
-          </button>
-        ))}
+      <div className="mb-5">
+        <div className="flex flex-wrap gap-2">
+          {all.map((g) => (
+            <button key={g.id} onClick={() => selectNature(g)}
+              className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+                g.id === natureId
+                  ? 'bg-accent text-white'
+                  : 'border border-line-strong text-dim hover:text-bright'
+              }`}>
+              {g.label}
+            </button>
+          ))}
+        </div>
+
+        {/* Second étage masqué quand il n'y a rien à départager : une nature à
+            instrument unique n'a pas besoin qu'on la précise. */}
+        {nature && nature.children.length > 1 && (
+          <div className="mt-3 flex flex-wrap gap-4 border-t border-line pt-3">
+            {nature.children.map((c) => (
+              <button key={c.id} onClick={() => setChildId(c.id)}
+                className={`border-b-2 pb-1 text-sm transition-colors ${
+                  c.id === group?.id
+                    ? 'border-accent text-accent-text'
+                    : 'border-transparent text-faint hover:text-bright'
+                }`}>
+                {c.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       {onStage && (

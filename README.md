@@ -49,6 +49,15 @@ fois.
 
 ### La file de lecture
 
+Les filtres de la vue « Médias » sont à deux étages, nature puis instrument.
+À plat, leur nombre serait multiplicatif — une pastille par couple, et
+« Playthrough » répété autant de fois qu'il y a d'instruments. Choisir une
+nature sélectionne automatiquement son premier instrument, et le second étage
+se masque quand il n'y a rien à départager.
+
+L'imbrication est produite par `media:manifest` : ajouter une nature ou un
+instrument ne demande aucune modification de l'interface.
+
 Lancer un média depuis la vue « Médias » prend le groupe affiché comme file :
 à la fin d'un morceau la lecture enchaîne sur le suivant, et reprend au premier
 après le dernier. Les playthroughs disposent pour cela de leur propre surface
