@@ -31,6 +31,34 @@ src/views/                Médias (accueil), Morceaux, Morceau
 src/components/           coquille responsive, barre de lecture
 ```
 
+### Des URLs partageables
+
+L'URL porte tout ce qui identifie un média, pour qu'un lien ouvre exactement ce
+que voyait l'expéditeur :
+
+```
+#/media/playthrough-bass         un groupe
+#/media/playthrough-bass/04      un média précis
+#/track/04                       un morceau
+#/track/04/playthrough-bass      un morceau vu sous un angle
+```
+
+Les deux vues manipulent les mêmes identifiants — groupe et morceau — dans
+l'ordre correspondant à leur entrée.
+
+Ouvrir un lien **met le média en place sans le lancer** : les navigateurs
+refusent la lecture automatique, et démarrer le son chez quelqu'un qui vient de
+cliquer serait de toute façon brutal.
+
+Les changements de sélection utilisent `replaceState` : sans cela, chaque clic
+sur un filtre empilerait une entrée d'historique et le bouton retour obligerait
+à les défaire un par un.
+
+URL et lecteur se désignent mutuellement, ce qui invite à la boucle. Un seul
+effet s'en charge, en regardant laquelle des deux sources vient de changer —
+deux effets séparés se combattaient, celui qui restaure depuis l'URL annulant
+celui qui suit l'enchaînement.
+
 ### Le lecteur
 
 Deux éléments média, un seul actif à la fois : un `<audio>` persistant monté à

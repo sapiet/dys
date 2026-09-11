@@ -1,33 +1,64 @@
-import { useState } from 'react'
+import { useEffect, useRef } from 'react'
 import { groups, getTrack, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
+import { navigate } from '../lib/useHashRoute'
 import { duration, totalDuration } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
 
 // Le fond du logo est écrasé en noir pur à la génération : `screen` le fait
 // alors disparaître sans masque, et le halo bleu — qu'un détourage aurait
 // mangé — est préservé.
-export function MediaView() {
+export function MediaView({ route }) {
   const all = groups()
-  const [natureId, setNatureId] = useState(all[0]?.id ?? null)
-  // Choisir une nature sélectionne son premier instrument : sans ça, « Playthroughs »
-  // n'afficherait rien tant qu'on n'aurait pas cliqué une seconde fois.
-  const [childId, setChildId] = useState(all[0]?.children?.[0]?.id ?? null)
-  const { play, toggle, current, playing, setVideoEl } = usePlayer()
+  const { play, select, toggle, current, playing, setVideoEl } = usePlayer()
 
-  const nature = all.find((g) => g.id === natureId)
-  const child = nature?.children.find((c) => c.id === childId) ?? nature?.children[0]
+  // La sélection vit dans l'URL, pas dans l'état : c'est ce qui rend un lien
+  // partageable. Le groupe demandé peut être une nature ou un de ses enfants.
+  const nature = all.find((g) => g.id === route.groupId || g.children.some((c) => c.id === route.groupId)) ?? all[0]
+  // Choisir une nature retombe sur son premier instrument : sans ça,
+  // « Playthrough » n'afficherait rien tant qu'on n'aurait pas cliqué deux fois.
+  const child = nature?.children.find((c) => c.id === route.groupId) ?? nature?.children[0]
   const group = child ?? nature
 
-  const selectNature = (next) => {
-    setNatureId(next.id)
-    setChildId(next.children[0]?.id ?? null)
-  }
+  const goTo = (groupId, trackId) =>
+    navigate(`/media/${groupId}${trackId ? `/${trackId}` : ''}`, { replace: true })
 
-  // La file, c'est le groupe affiché : la lecture enchaîne les morceaux dans
-  // l'ordre et reprend au premier une fois le dernier terminé. Recliquer la
-  // ligne déjà active met en pause plutôt que de relancer depuis le début.
+  // URL et lecteur se désignent mutuellement. Deux effets séparés se
+  // combattaient : celui qui restaure depuis l'URL annulait celui qui suit
+  // l'enchaînement. Un seul effet, qui regarde laquelle des deux sources vient
+  // de changer, lève l'ambiguïté.
+  const dernierRoute = useRef(null)
+  const dernierMedia = useRef(null)
+
+  useEffect(() => {
+    if (!group) return
+    const routeAChange = route.trackId !== dernierRoute.current
+    const mediaAChange = current?.id !== dernierMedia.current
+    dernierRoute.current = route.trackId
+    dernierMedia.current = current?.id
+
+    // L'URL a changé : elle désigne le média à mettre en place. On ne le lance
+    // pas — les navigateurs refusent la lecture automatique, et démarrer le son
+    // chez quelqu'un qui vient d'ouvrir un lien serait de toute façon brutal.
+    if (routeAChange && route.trackId) {
+      const item = group.items.find((i) => i.trackId === route.trackId)
+      if (item && item.id !== current?.id) {
+        select(item, { queue: group.items.map((i) => i.id) })
+        return
+      }
+    }
+
+    // La lecture a avancé d'elle-même : l'URL suit, pour rester copiable à tout
+    // instant sans désigner un média qu'on n'écoute plus.
+    if (mediaAChange && current
+      && group.items.some((i) => i.id === current.id)
+      && route.trackId !== current.trackId) {
+      goTo(group.id, current.trackId)
+    }
+  })
+
   const start = (item) => {
+    goTo(group.id, item.trackId)
     if (current?.id === item.id) toggle()
     else play(item, { queue: group.items.map((i) => i.id) })
   }
@@ -48,9 +79,9 @@ export function MediaView() {
       <div className="mb-5">
         <div className="flex flex-wrap gap-2">
           {all.map((g) => (
-            <button key={g.id} onClick={() => selectNature(g)}
+            <button key={g.id} onClick={() => goTo(g.children[0]?.id ?? g.id)}
               className={`rounded-full px-3 py-1.5 text-[13px] transition-colors ${
-                g.id === natureId
+                g.id === nature?.id
                   ? 'bg-accent text-white'
                   : 'border border-line-strong text-dim hover:text-bright'
               }`}>
@@ -64,7 +95,7 @@ export function MediaView() {
         {nature && nature.children.length > 1 && (
           <div className="mt-3 flex flex-wrap gap-4 border-t border-line pt-3">
             {nature.children.map((c) => (
-              <button key={c.id} onClick={() => setChildId(c.id)}
+              <button key={c.id} onClick={() => goTo(c.id)}
                 className={`border-b-2 pb-1 text-[13px] transition-colors ${
                   c.id === group?.id
                     ? 'border-accent text-accent-text'

@@ -2,8 +2,9 @@ import { getTrack, anglesOf, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, megabytes } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
+import { navigate } from '../lib/useHashRoute'
 
-export function TrackView({ trackId }) {
+export function TrackView({ trackId, groupId }) {
   const track = getTrack(trackId)
   const { current, playing, time, play, switchTo, toggle, setVideoEl } = usePlayer()
 
@@ -16,9 +17,13 @@ export function TrackView({ trackId }) {
   }
 
   const angles = anglesOf(trackId)
-  // L'angle affiché suit la lecture en cours dès qu'elle concerne ce morceau ;
-  // sinon on retombe sur le master.
-  const selected = angles.find((a) => a.id === current?.id) ?? angles[0]
+  // L'angle demandé par l'URL prime — c'est lui qui rend un lien partageable.
+  // À défaut, on suit la lecture en cours si elle concerne ce morceau, sinon on
+  // retombe sur le master.
+  const angleId = (angle) => (angle.instrument ? `${angle.kind}-${angle.instrument}` : angle.kind)
+  const selected = angles.find((a) => angleId(a) === groupId)
+    ?? angles.find((a) => a.id === current?.id)
+    ?? angles[0]
   const live = current?.id === selected.id
   const poster = selected.poster ?? angles.find((a) => a.poster)?.poster
 
@@ -35,7 +40,11 @@ export function TrackView({ trackId }) {
 
       <div className="mb-4 flex flex-wrap gap-2">
         {angles.map((angle) => (
-          <button key={angle.id} onClick={() => switchTo(angle)}
+          <button key={angle.id}
+            onClick={() => {
+              navigate(`/track/${trackId}/${angleId(angle)}`, { replace: true })
+              switchTo(angle)
+            }}
             className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
               angle.id === selected.id
                 ? 'bg-accent text-white'

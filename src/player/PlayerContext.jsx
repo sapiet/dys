@@ -148,6 +148,17 @@ export function PlayerProvider({ children }) {
     setPlaying(true)
   }, [currentId])
 
+  // Désigner un média sans le lancer : c'est ce qu'attend l'ouverture d'un lien
+  // partagé, les navigateurs refusant de toute façon une lecture automatique.
+  const select = useCallback((item, { queue: nextQueue } = {}) => {
+    setQueue(nextQueue ?? [item.id])
+    if (item.id === currentId) return
+    timeRef.current = 0
+    setTime(0)
+    setDuration(item.duration)
+    setCurrentId(item.id)
+  }, [currentId])
+
   // Changer d'angle, c'est la même œuvre vue autrement : la position se
   // conserve et l'état de lecture ne bouge pas.
   const switchTo = useCallback((item) => {
@@ -172,11 +183,11 @@ export function PlayerProvider({ children }) {
     () => ({
       current, playing, time, duration, volume, queue,
       videoMounted: Boolean(videoEl),
-      play, switchTo, toggle, seek, setVolume, setVideoEl,
+      play, select, switchTo, toggle, seek, setVolume, setVideoEl,
       next: () => advance(1),
       previous: () => advance(-1),
     }),
-    [current, playing, time, duration, volume, queue, videoEl, play, switchTo, toggle, seek, setVolume, advance],
+    [current, playing, time, duration, volume, queue, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
   )
 
   return (
