@@ -1,12 +1,14 @@
 import { tracks, anglesOf, resolveUrl } from '../lib/media'
-import { duration } from '../lib/format'
+import { duration, totalDuration } from '../lib/format'
 
 export function TracksView() {
   return (
     <>
       <header className="mb-6">
         <h1 className="text-2xl font-medium tracking-tight">Morceaux</h1>
-        <p className="mt-1 text-sm text-faint">{tracks.length} compositions</p>
+        <p className="mt-1 text-sm text-faint">
+          {tracks.length} compositions · {totalDuration(tracks.reduce((sum, t) => sum + t.duration, 0))}
+        </p>
       </header>
 
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">

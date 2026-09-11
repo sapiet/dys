@@ -76,6 +76,16 @@
         "playthrough-guitar-left-06",
         "backing-track-drums-06"
       ]
+    },
+    {
+      "id": "08",
+      "number": 8,
+      "title": "#08",
+      "notes": null,
+      "duration": 201,
+      "itemIds": [
+        "master-08"
+      ]
     }
   ],
   "groups": [
@@ -88,7 +98,8 @@
         "master-03",
         "master-04",
         "master-05",
-        "master-06"
+        "master-06",
+        "master-08"
       ],
       "children": []
     },
@@ -577,6 +588,26 @@
           "format": "mp3",
           "path": "audio/backing-tracks/drums/06.mp3",
           "bytes": 4390055,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
+      "id": "master-08",
+      "kind": "master",
+      "trackId": "08",
+      "instrument": null,
+      "label": "Master",
+      "instrumentLabel": null,
+      "duration": 201,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/master/08.mp3",
+          "bytes": 8053990,
           "width": null,
           "height": null
         }

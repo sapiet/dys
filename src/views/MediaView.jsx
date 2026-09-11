@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { groups, getTrack, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
-import { duration } from '../lib/format'
+import { duration, totalDuration } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
 
 // Le fond du logo est écrasé en noir pur à la génération : `screen` le fait
@@ -92,6 +92,12 @@ export function MediaView() {
           </div>
         </div>
       )}
+
+      <p className="mb-2 text-xs text-faint">
+        {group?.items.length} média{group?.items.length > 1 ? 's' : ''}
+        {' · '}
+        {totalDuration((group?.items ?? []).reduce((sum, i) => sum + i.duration, 0))}
+      </p>
 
       <div className="flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line">
         {group?.items.map((item) => {
