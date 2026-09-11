@@ -46,9 +46,15 @@ que voyait l'expéditeur :
 Les deux vues manipulent les mêmes identifiants — groupe et morceau — dans
 l'ordre correspondant à leur entrée.
 
-Ouvrir un lien **met le média en place sans le lancer** : les navigateurs
-refusent la lecture automatique, et démarrer le son chez quelqu'un qui vient de
-cliquer serait de toute façon brutal.
+Ouvrir un lien **tente** de lancer la lecture. Les navigateurs la refusent tant
+que l'utilisateur n'a pas interagi avec le site : la tentative aboutit dans
+l'application installée et chez les visiteurs habitués — Chrome mesure
+l'engagement — et échoue chez qui découvre le site. Le rejet est capté dans
+`PlayerContext`, qui repasse l'état à l'arrêt : le média reste en place, prêt,
+et le bouton affiche « Lecture ».
+
+Seule l'arrivée sur un lien tente la lecture ; les navigations internes passent
+par un clic, qui décide lui-même.
 
 Les changements de sélection utilisent `replaceState` : sans cela, chaque clic
 sur un filtre empilerait une entrée d'historique et le bouton retour obligerait

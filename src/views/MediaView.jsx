@@ -29,11 +29,16 @@ export function MediaView({ route }) {
   // de changer, lève l'ambiguïté.
   const dernierRoute = useRef(null)
   const dernierMedia = useRef(null)
+  // Seule l'arrivée sur un lien tente la lecture. Les navigations internes
+  // passent déjà par un clic, qui décide lui-même de lancer ou non.
+  const arrivee = useRef(true)
 
   useEffect(() => {
     if (!group) return
     const routeAChange = route.trackId !== dernierRoute.current
     const mediaAChange = current?.id !== dernierMedia.current
+    const estArrivee = arrivee.current
+    arrivee.current = false
     dernierRoute.current = route.trackId
     dernierMedia.current = current?.id
 
@@ -43,7 +48,13 @@ export function MediaView({ route }) {
     if (routeAChange && route.trackId) {
       const item = group.items.find((i) => i.trackId === route.trackId)
       if (item && item.id !== current?.id) {
-        select(item, { queue: group.items.map((i) => i.id) })
+        const file = { queue: group.items.map((i) => i.id) }
+        // Les navigateurs refusent la lecture sans interaction préalable : la
+        // tentative aboutit dans l'app installée ou chez un visiteur habitué,
+        // et retombe silencieusement en pause ailleurs — le rejet est capté
+        // dans PlayerContext, qui remet l'état à l'arrêt.
+        if (estArrivee) play(item, file)
+        else select(item, file)
         return
       }
     }

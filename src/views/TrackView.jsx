@@ -1,3 +1,4 @@
+import { useEffect, useRef } from 'react'
 import { getTrack, anglesOf, resolveUrl, isVideo } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, megabytes } from '../lib/format'
@@ -26,6 +27,15 @@ export function TrackView({ trackId, groupId }) {
     ?? angles[0]
   const live = current?.id === selected.id
   const poster = selected.poster ?? angles.find((a) => a.poster)?.poster
+
+  // Un lien qui précise l'angle désigne un média : on tente de le lancer, comme
+  // dans la vue Médias. Sans angle, rien n'est désigné et on ne touche à rien.
+  const arrivee = useRef(true)
+  useEffect(() => {
+    if (!arrivee.current) return
+    arrivee.current = false
+    if (groupId && selected.id !== current?.id) play(selected)
+  })
 
   return (
     <>
