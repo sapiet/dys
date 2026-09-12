@@ -2,6 +2,7 @@ import { useHashRoute } from './lib/useHashRoute'
 import { PlayerProvider } from './player/PlayerContext'
 import { Layout } from './components/Layout'
 import { PlayerBar } from './components/PlayerBar'
+import { UnlockDialog } from './components/UnlockDialog'
 import { TracksView } from './views/TracksView'
 import { TrackView } from './views/TrackView'
 import { MediaView } from './views/MediaView'
@@ -17,6 +18,7 @@ export default function App() {
         {route.name === 'media' && <MediaView route={route} />}
       </Layout>
       <PlayerBar />
+      <UnlockDialog />
     </PlayerProvider>
   )
 }

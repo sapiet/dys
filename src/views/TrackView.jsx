@@ -1,8 +1,9 @@
 import { useEffect, useRef } from 'react'
-import { getTrack, anglesOf, resolveUrl, isVideo } from '../lib/media'
+import { getTrack, anglesOf, resolveUrl, isVideo, absoluteUrl } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, megabytes } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
+import { ShareButtons } from '../components/ShareButtons'
 import { navigate } from '../lib/useHashRoute'
 
 export function TrackView({ trackId, groupId }) {
@@ -86,7 +87,9 @@ export function TrackView({ trackId, groupId }) {
         )}
       </div>
 
-      <div className="mt-3 flex justify-end">
+      <div className="mt-3 flex flex-wrap justify-end gap-2">
+        <ShareButtons url={absoluteUrl(`/track/${trackId}/${angleId(selected)}`)}
+          title={`${track.title} — ${selected.label}`} />
         <DownloadButton item={selected} label />
       </div>
 

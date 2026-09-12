@@ -68,3 +68,9 @@ export function downloadName(item, track) {
   parts.push(item.kind)
   return `${parts.join('-')}.${source.format}`
 }
+
+// Lien absolu vers un média, construit explicitement plutôt que lu dans la
+// barre d'adresse : celle-ci ne précise pas toujours l'angle affiché.
+export function absoluteUrl(path) {
+  return new URL(`${import.meta.env.BASE_URL}#${path}`, window.location.origin).href
+}

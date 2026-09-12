@@ -56,6 +56,24 @@ et le bouton affiche « Lecture ».
 Seule l'arrivée sur un lien tente la lecture ; les navigations internes passent
 par un clic, qui décide lui-même.
 
+Quand le navigateur refuse, une boîte de dialogue propose un bouton — ce clic
+est précisément le geste qui débloque la lecture. Elle **ne s'affiche que dans
+ce cas** : dans l'application installée, où la lecture aboutit, elle ne paraît
+jamais. `PlayerContext` distingue pour cela un `NotAllowedError` d'un
+`AbortError`, ce dernier n'étant qu'un changement de source en cours de
+chargement.
+
+### Copier et partager
+
+À côté du téléchargement, sur la page d'un morceau et sous le lecteur de la vue
+Médias. Le lien est **construit depuis l'item**, pas lu dans la barre
+d'adresse : celle-ci ne précise pas toujours l'angle affiché.
+
+Le bouton de partage n'apparaît que si `navigator.share` existe — absent des
+navigateurs de bureau sous Windows et Linux, où mieux vaut le masquer que
+l'afficher inerte. Le presse-papiers exigeant un contexte sécurisé, une
+invite manuelle prend le relais s'il est indisponible.
+
 Les changements de sélection utilisent `replaceState` : sans cela, chaque clic
 sur un filtre empilerait une entrée d'historique et le bouton retour obligerait
 à les défaire un par un.

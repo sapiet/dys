@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react'
-import { groups, getTrack, resolveUrl, isVideo } from '../lib/media'
+import { groups, getTrack, resolveUrl, isVideo, absoluteUrl } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { navigate } from '../lib/useHashRoute'
 import { duration, totalDuration } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
+import { ShareButtons } from '../components/ShareButtons'
 
 // Le fond du logo est écrasé en noir pur à la génération : `screen` le fait
 // alors disparaître sans masque, et le halo bleu — qu'un détourage aurait
@@ -47,14 +48,16 @@ export function MediaView({ route }) {
     // chez quelqu'un qui vient d'ouvrir un lien serait de toute façon brutal.
     if (routeAChange && route.trackId) {
       const item = group.items.find((i) => i.trackId === route.trackId)
-      if (item && item.id !== current?.id) {
+      if (item) {
         const file = { queue: group.items.map((i) => i.id) }
-        // Les navigateurs refusent la lecture sans interaction préalable : la
-        // tentative aboutit dans l'app installée ou chez un visiteur habitué,
-        // et retombe silencieusement en pause ailleurs — le rejet est capté
-        // dans PlayerContext, qui remet l'état à l'arrêt.
+        // Les navigateurs refusent la lecture sans interaction préalable. La
+        // tentative aboutit dans l'app installée ou chez un visiteur habitué ;
+        // ailleurs, PlayerContext capte le rejet et propose un bouton.
+        //
+        // On tente même si le média est déjà celui en cours : recevoir un lien
+        // vers ce qu'on écoutait en pause doit le relancer.
         if (estArrivee) play(item, file)
-        else select(item, file)
+        else if (item.id !== current?.id) select(item, file)
         return
       }
     }
@@ -126,10 +129,12 @@ export function MediaView({ route }) {
               poster={current.poster ? resolveUrl(current.poster) : undefined}
               className="size-full" />
           </div>
-          <div className="mt-2 flex items-center justify-between gap-3">
+          <div className="mt-2 flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs text-faint">
               {getTrack(current.trackId)?.title} · {current.label}
             </p>
+            <ShareButtons url={absoluteUrl(`/media/${group.id}/${current.trackId}`)}
+              title={`${getTrack(current.trackId)?.title} — ${current.label}`} />
             <DownloadButton item={current} label />
           </div>
         </div>

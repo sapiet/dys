@@ -17,6 +17,9 @@ export function PlayerProvider({ children }) {
   const [time, setTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const [volume, setVolumeState] = useState(1)
+  // Le navigateur a refusé une lecture faute d'interaction préalable. On le
+  // signale au lieu de l'avaler : c'est ce qui permet de proposer un bouton.
+  const [blocked, setBlocked] = useState(false)
   // File de lecture : les ids parcourus en boucle quand un média se termine.
   // Vide ou à un seul élément, la lecture s'arrête simplement à la fin.
   const [queue, setQueue] = useState([])
@@ -68,9 +71,13 @@ export function PlayerProvider({ children }) {
 
     // Appeler play() pendant le chargement de la source rejette la promesse en
     // AbortError. On attend que l'élément soit prêt plutôt que d'abandonner.
-    const start = () => active.play().catch((error) => {
-      if (error.name !== 'AbortError') setPlaying(false)
-    })
+    const start = () => active.play()
+      .then(() => setBlocked(false))
+      .catch((error) => {
+        if (error.name === 'AbortError') return
+        setPlaying(false)
+        if (error.name === 'NotAllowedError') setBlocked(true)
+      })
 
     if (active.readyState >= 2) {
       start()
@@ -168,8 +175,12 @@ export function PlayerProvider({ children }) {
   }, [currentId])
 
   const toggle = useCallback(() => {
-    if (currentId) setPlaying((p) => !p)
+    if (!currentId) return
+    setBlocked(false)
+    setPlaying((p) => !p)
   }, [currentId])
+
+  const dismissBlocked = useCallback(() => setBlocked(false), [])
 
   const seek = useCallback((seconds) => {
     timeRef.current = seconds
@@ -181,13 +192,13 @@ export function PlayerProvider({ children }) {
 
   const value = useMemo(
     () => ({
-      current, playing, time, duration, volume, queue,
+      current, playing, time, duration, volume, queue, blocked, dismissBlocked,
       videoMounted: Boolean(videoEl),
       play, select, switchTo, toggle, seek, setVolume, setVideoEl,
       next: () => advance(1),
       previous: () => advance(-1),
     }),
-    [current, playing, time, duration, volume, queue, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
+    [current, playing, time, duration, volume, queue, blocked, dismissBlocked, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
   )
 
   return (
