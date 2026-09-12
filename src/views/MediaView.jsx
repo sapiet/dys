@@ -156,7 +156,7 @@ export function MediaView({ route }) {
               }`}>
               <button onClick={() => start(item)}
                 className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left">
-              <div className="relative grid aspect-video w-24 shrink-0 place-items-center overflow-hidden rounded-md bg-raised">
+              <div className="relative grid aspect-video w-20 shrink-0 place-items-center overflow-hidden rounded-md bg-raised sm:w-24">
                 {item.poster
                   ? <img src={resolveUrl(item.poster)} alt="" className={`size-full object-cover ${isCurrent ? 'opacity-50' : ''}`} />
                   : <svg viewBox="0 0 24 24" fill="currentColor" className="size-4 text-faint" aria-hidden="true"><path d="M8 5.5v13l11-6.5z" /></svg>}
@@ -176,6 +176,9 @@ export function MediaView({ route }) {
                 </p>
               </div>
               </button>
+              <ShareButtons compact
+                url={absoluteUrl(`/media/${group.id}/${item.trackId}`)}
+                title={getTrack(item.trackId)?.title ?? item.trackId} />
               <DownloadButton item={item} />
             </div>
           )

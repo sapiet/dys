@@ -1,5 +1,6 @@
 import { primarySource, resolveUrl, downloadName, getTrack } from '../lib/media'
 import { megabytes } from '../lib/format'
+import { CONTROLE_ICONE, CONTROLE_LIBELLE } from './controlStyles'
 
 const ICON = 'M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'
 
@@ -13,11 +14,9 @@ export function DownloadButton({ item, label = false }) {
   return (
     <a href={resolveUrl(source.path)} download={downloadName(item, track)}
       aria-label={`Télécharger ${track?.title} — ${item.label}`}
-      className={`inline-flex shrink-0 items-center gap-2 rounded-lg text-dim transition-colors hover:bg-surface hover:text-bright ${
-        label ? 'border border-line-strong px-3 py-1.5 text-sm' : 'p-2'
-      }`}>
+      className={label ? `${CONTROLE_LIBELLE} text-sm` : CONTROLE_ICONE}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
-        strokeLinecap="round" strokeLinejoin="round" className="size-[18px]" aria-hidden="true">
+        strokeLinecap="round" strokeLinejoin="round" className="size-4" aria-hidden="true">
         <path d={ICON} />
       </svg>
       {/* Le verbe est superflu à côté de l'icône, et la place manque sur mobile.
