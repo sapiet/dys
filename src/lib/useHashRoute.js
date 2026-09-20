@@ -10,6 +10,7 @@ import { useSyncExternalStore } from 'react'
 //   #/media/playthrough-bass/04      un média précis
 //   #/track/04                       un morceau
 //   #/track/04/playthrough-bass      un morceau vu sous un angle
+//   #/track/04/tab                   sa tablature
 //
 // Les deux vues manipulent les mêmes identifiants — celui du groupe et celui
 // du morceau — dans l'ordre qui correspond à leur entrée.
@@ -27,7 +28,6 @@ export function useHashRoute() {
   const path = useSyncExternalStore(subscribe, snapshot, () => '/')
   const [, head, first, second] = path.split('/')
 
-  if (head === 'tab' && first) return { name: 'tab', trackId: first }
   if (head === 'track' && first) return { name: 'track', trackId: first, groupId: second ?? null }
   if (head === 'tracks') return { name: 'tracks' }
   return { name: 'media', groupId: head === 'media' ? (first ?? null) : null, trackId: head === 'media' ? (second ?? null) : null }

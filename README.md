@@ -96,8 +96,13 @@ d'un morceau à côté des autres commandes.
 
 ### La tablature défile sur le master
 
-`#/tab/<morceau>` grave la partition avec alphaTab et fait défiler le curseur
-sur l'enregistrement — pas sur un synthétiseur MIDI.
+La tablature est un **angle du morceau**, au même titre que le master ou un
+playthrough : `#/track/<morceau>/tab`. La sélectionner grave la partition avec
+alphaTab dans le cadre du morceau et fait défiler le curseur sur
+l'enregistrement — pas sur un synthétiseur MIDI.
+
+Elle n'entre pas pour autant dans la liste des angles que parcourt le code de
+lecture : ce n'est pas un média, elle n'a ni durée ni piste audio.
 
 Le master est désigné dès l'arrivée sur la page, sans être lancé : la barre du
 lecteur est présente d'emblée et c'est elle qui commande. La page n'a pas de

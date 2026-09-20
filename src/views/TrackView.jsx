@@ -3,6 +3,7 @@ import { getTrack, anglesOf, resolveUrl, isVideo, absoluteUrl, documentFor } fro
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, fileSize } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
+import { TabScore } from '../components/TabScore'
 import { ShareButtons } from '../components/ShareButtons'
 import { navigate } from '../lib/useHashRoute'
 
@@ -31,6 +32,11 @@ export function TrackView({ trackId, groupId }) {
   // La tablature n'est pas un angle : elle ne se joue pas, et l'ajouter aux
   // pastilles ferait croire le contraire.
   const tablature = documentFor(trackId)
+  // La tablature est un angle comme les autres du point de vue de la
+  // navigation, mais elle n'est pas un média : elle n'entre pas dans `angles`,
+  // que tout le code de lecture parcourt.
+  const surTablature = Boolean(tablature) && groupId === 'tab'
+  const master = angles.find((a) => a.kind === 'master')
 
   // Un lien qui précise l'angle désigne un média : on tente de le lancer, comme
   // dans la vue Médias. Sans angle, rien n'est désigné et on ne touche à rien.
@@ -60,15 +66,36 @@ export function TrackView({ trackId, groupId }) {
               switchTo(angle)
             }}
             className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
-              angle.id === selected.id
+              !surTablature && angle.id === selected.id
                 ? 'bg-accent text-white'
                 : 'border border-line-strong text-dim hover:text-bright'
             }`}>
             {angle.label}
           </button>
         ))}
+
+        {tablature && (
+          <button onClick={() => {
+              navigate(`/track/${trackId}/tab`, { replace: true })
+              // La partition se cale sur le master : on le désigne pour que la
+              // barre du lecteur soit là et puisse la faire défiler.
+              if (master && track.tabSync !== false) switchTo(master)
+            }}
+            className={`rounded-full px-3.5 py-1.5 text-sm transition-colors ${
+              surTablature
+                ? 'bg-accent text-white'
+                : 'border border-line-strong text-dim hover:text-bright'
+            }`}>
+            Tablature
+          </button>
+        )}
       </div>
 
+      {surTablature ? (
+        <TabScore trackId={trackId} master={master}
+          sync={Boolean(master) && track.tabSync !== false}
+          offset={track.tabOffset ?? 0} hauteur="max-h-[60vh]" />
+      ) : (
       <div className="relative aspect-video overflow-hidden rounded-xl border border-line bg-surface">
         {live && isVideo(selected) ? (
           <video ref={setVideoEl} playsInline controls
@@ -89,18 +116,9 @@ export function TrackView({ trackId, groupId }) {
           </>
         )}
       </div>
+      )}
 
       <div className="mt-3 flex flex-wrap justify-end gap-2">
-        {tablature && (
-          <a href={`#/tab/${trackId}`}
-            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-raised px-2.5 py-2 text-[13px] text-dim transition hover:bg-line-strong hover:text-bright sm:px-4">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
-              strokeLinecap="round" strokeLinejoin="round" className="size-4" aria-hidden="true">
-              <path d="M4 6h16M4 12h16M4 18h10M18 15v6M15 18h6" />
-            </svg>
-            <span className="hidden sm:inline">Tablature</span>
-          </a>
-        )}
         {tablature && <DownloadButton item={tablature} />}
         <ShareButtons url={absoluteUrl(`/track/${trackId}/${angleId(selected)}`)}
           title={`${track.title} — ${selected.label}`} />
