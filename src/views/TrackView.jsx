@@ -91,7 +91,17 @@ export function TrackView({ trackId, groupId }) {
       </div>
 
       <div className="mt-3 flex flex-wrap justify-end gap-2">
-        {tablature && <DownloadButton item={tablature} label text="Tablature" />}
+        {tablature && (
+          <a href={`#/tab/${trackId}`}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full bg-raised px-2.5 py-2 text-[13px] text-dim transition hover:bg-line-strong hover:text-bright sm:px-4">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
+              strokeLinecap="round" strokeLinejoin="round" className="size-4" aria-hidden="true">
+              <path d="M4 6h16M4 12h16M4 18h10M18 15v6M15 18h6" />
+            </svg>
+            <span className="hidden sm:inline">Tablature</span>
+          </a>
+        )}
+        {tablature && <DownloadButton item={tablature} />}
         <ShareButtons url={absoluteUrl(`/track/${trackId}/${angleId(selected)}`)}
           title={`${track.title} — ${selected.label}`} />
         <DownloadButton item={selected} label />

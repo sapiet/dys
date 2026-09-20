@@ -94,3 +94,21 @@
   border-radius: 50%;
   background: var(--color-bright);
 }
+
+/* alphaTab positionne ses curseurs mais ne leur donne aucune couleur : la page
+   hôte doit les styler. Sans ces règles, ils suivent la musique en restant
+   parfaitement invisibles. */
+.at-cursor-bar {
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+}
+
+.at-cursor-beat {
+  background: var(--color-accent-text);
+  width: 3px;
+}
+
+/* Notes en cours de lecture. */
+.at-highlight * {
+  fill: var(--color-accent-text);
+  stroke: var(--color-accent-text);
+}

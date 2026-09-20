@@ -159,6 +159,9 @@ const tracks = trackIds.map((id) => {
     number: Number(id),
     title: meta.tracks?.[id]?.title ?? `#${id}`,
     notes: meta.tracks?.[id]?.notes ?? null,
+    // Décalage en millisecondes entre le début du master et la première mesure
+    // de la tablature. Un enregistrement commence rarement pile sur le temps.
+    tabOffset: meta.tracks?.[id]?.tabOffset ?? 0,
     duration: master?.duration ?? Math.max(...own.map((i) => i.duration)),
     itemIds: own.map((i) => i.id),
   }

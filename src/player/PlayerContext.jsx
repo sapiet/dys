@@ -193,12 +193,15 @@ export function PlayerProvider({ children }) {
   const value = useMemo(
     () => ({
       current, playing, time, duration, volume, queue, blocked, dismissBlocked,
+      // L'élément actif, pour les usages qui doivent parler au média lui-même
+      // — la tablature doit lui déléguer volume et vitesse de lecture.
+      mediaElement: active,
       videoMounted: Boolean(videoEl),
       play, select, switchTo, toggle, seek, setVolume, setVideoEl,
       next: () => advance(1),
       previous: () => advance(-1),
     }),
-    [current, playing, time, duration, volume, queue, blocked, dismissBlocked, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
+    [current, playing, time, duration, volume, queue, blocked, dismissBlocked, active, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
   )
 
   return (

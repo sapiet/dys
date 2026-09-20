@@ -8,3 +8,7 @@ dist/
 /media/
 # Les proxies générés par `npm run media:build` sont versionnés : la CI n'a pas
 # accès à `media/`, et GitHub Pages ne sert que ce qui se trouve dans le repo.
+
+# Déposés par le plugin Vite d'alphaTab à chaque build, pas par nous
+public/font/
+public/soundfont/

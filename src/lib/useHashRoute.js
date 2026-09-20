@@ -27,6 +27,7 @@ export function useHashRoute() {
   const path = useSyncExternalStore(subscribe, snapshot, () => '/')
   const [, head, first, second] = path.split('/')
 
+  if (head === 'tab' && first) return { name: 'tab', trackId: first }
   if (head === 'track' && first) return { name: 'track', trackId: first, groupId: second ?? null }
   if (head === 'tracks') return { name: 'tracks' }
   return { name: 'media', groupId: head === 'media' ? (first ?? null) : null, trackId: head === 'media' ? (second ?? null) : null }

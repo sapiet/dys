@@ -94,9 +94,34 @@ Elles apparaissent comme un quatrième groupe dans la vue Médias, avec
 téléchargement, copie et partage mais sans bouton de lecture, et sur la page
 d'un morceau à côté des autres commandes.
 
-**Elles ne sont pas affichées dans le navigateur** : un fichier Guitar Pro
-demande une bibliothèque de rendu dédiée. Le visiteur télécharge et ouvre avec
-son propre logiciel.
+### La tablature défile sur le master
+
+`#/tab/<morceau>` grave la partition avec alphaTab et fait défiler le curseur
+sur l'enregistrement — pas sur un synthétiseur MIDI.
+
+**alphaTab suit, il ne commande pas.** Le lecteur global garde l'élément audio ;
+alphaTab reçoit un gestionnaire dont `play` et `pause` sont volontairement
+vides, et sa position est alimentée par le temps du lecteur. Les deux sens de
+pilotage se combattaient : alphaTab lançait notre lecteur, qui le relançait, et
+l'audio finissait en pause pendant qu'alphaTab se croyait en lecture. Seul le
+déplacement remonte, quand on clique une mesure.
+
+Trois points ont demandé du temps, et méritent d'être notés :
+
+- **La police de notation.** Le plugin Vite la fait chercher à côté du script
+  d'alphaTab alors qu'il la copie à la racine ; le repli SPA renvoyait
+  `index.html`, et le rendu ne démarrait jamais. D'où le `fontDirectory`
+  explicite.
+- **Les curseurs n'ont aucune couleur.** alphaTab les positionne mais laisse la
+  page les styler — sans les règles de `index.css`, ils suivent la musique en
+  restant invisibles.
+- **Un point de synchronisation est obligatoire.** Sans lui, alphaTab n'a pas de
+  correspondance entre son axe temporel et l'audio, et refuse de démarrer. Un
+  seul, sur la première mesure, a suffi : 127 ms d'écart après 157 secondes de
+  lecture. `media.meta.json` accepte un `tabOffset` par morceau pour les
+  enregistrements qui ne commencent pas sur le premier temps.
+
+Le fichier `.gp5` reste téléchargeable pour qui veut l'éditer.
 
 ### Le lecteur
 

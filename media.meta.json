@@ -1,11 +1,35 @@
 {
   "tracks": {
-    "01": { "title": "Intro - #01", "notes": null },
-    "02": { "title": "#02", "notes": null },
-    "03": { "title": "#03", "notes": null },
-    "04": { "title": "Massacre", "notes": null },
-    "05": { "title": "We Fail", "notes": null },
-    "06": { "title": "#06", "notes": null }
+    "01": {
+      "title": "Intro - #01",
+      "notes": null,
+      "tabOffset": 0
+    },
+    "02": {
+      "title": "#02",
+      "notes": null,
+      "tabOffset": 0
+    },
+    "03": {
+      "title": "#03",
+      "notes": null,
+      "tabOffset": 0
+    },
+    "04": {
+      "title": "Massacre",
+      "notes": null,
+      "tabOffset": 0
+    },
+    "05": {
+      "title": "We Fail",
+      "notes": null,
+      "tabOffset": 0
+    },
+    "06": {
+      "title": "#06",
+      "notes": null,
+      "tabOffset": 0
+    }
   },
   "sessions": {}
 }
