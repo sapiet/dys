@@ -18,12 +18,26 @@ const siteUrl = {
   transformIndexHtml: (html) => html.replaceAll('%SITE_URL%', SITE_URL),
 }
 
+// Le plugin d'alphaTab injecte dans ses workers — celui du synthétiseur comme
+// celui de la gravure — un import de l'environnement de Vite préfixé par notre
+// `base` : `/dys/@vite/env`. Le serveur de développement ne connaît que
+// `/@vite/env` et refuse de résoudre l'autre, ce qui fait échouer le worker.
+// Ce renvoi rétablit la résolution ; au build, l'import n'existe pas.
+const alphaTabWorkerEnv = {
+  name: 'alphatab-worker-env',
+  apply: 'serve',
+  resolveId(id) {
+    return id === `${BASE}@vite/env` ? this.resolve('/@vite/env') : null
+  },
+}
+
 export default defineConfig({
   base: BASE,
   plugins: [
     react(),
     tailwindcss(),
     siteUrl,
+    alphaTabWorkerEnv,
     // Copie la police de notation et configure les workers. alphaTab n'est
     // chargé qu'à l'ouverture d'une tablature, via un import dynamique.
     alphaTab(),
