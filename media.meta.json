@@ -29,6 +29,17 @@
       "title": "#06",
       "notes": null,
       "tabOffset": 0
+    },
+    "07": {
+      "title": null,
+      "notes": null,
+      "tabOffset": 0,
+      "tabSync": false
+    },
+    "08": {
+      "title": null,
+      "notes": null,
+      "tabOffset": 0
     }
   },
   "sessions": {}

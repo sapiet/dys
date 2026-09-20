@@ -32,7 +32,10 @@ export function TabView({ trackId }) {
   const master = items.find((i) => i.trackId === trackId && i.kind === 'master')
   const { current, playing, time, select, seek, mediaElement } = usePlayer()
 
-  const enCours = current?.id === master?.id
+  // Sans master, ou tant que la tablature ne lui correspond pas, la partition
+  // se consulte en silence : rien à synchroniser.
+  const surMaster = Boolean(master) && track?.tabSync !== false
+  const enCours = surMaster && current?.id === master?.id
 
   // alphaTab ne commande pas le transport : il suit. Les deux sens de pilotage
   // se marchaient dessus — il lançait notre lecteur, qui le relançait, et
@@ -45,8 +48,8 @@ export function TabView({ trackId }) {
   // est là d'emblée, et c'est elle qui commande. La page n'a donc pas besoin
   // de son propre bouton.
   useEffect(() => {
-    if (master && current?.id !== master.id) select(master)
-  }, [master, current?.id, select])
+    if (surMaster && master && current?.id !== master.id) select(master)
+  }, [surMaster, master, current?.id, select])
 
   useEffect(() => {
     if (!tablature || !master) return
@@ -91,6 +94,7 @@ export function TabView({ trackId }) {
       // d'événement « prêt » : on pose le gestionnaire de façon idempotente
       // depuis plusieurs points d'accroche.
       const brancher = () => {
+        if (!surMaster) return
         const sortie = api.player?.output
         if (!sortie || sortie.handler) return
         sortie.handler = {
@@ -112,6 +116,10 @@ export function TabView({ trackId }) {
       api.scoreLoaded.on((score) => {
         brancher()
         setPistes((score?.tracks ?? []).map((t) => ({ index: t.index, nom: t.name?.trim() || `Piste ${t.index + 1}` })))
+        // Sans cette remise à zéro, passer d'un morceau à l'autre garderait la
+        // piste précédente en surbrillance alors qu'une autre est gravée.
+        setPisteActive(0)
+        if (!surMaster) return
 
         // Sans point de synchronisation, alphaTab n'a aucune correspondance
         // entre son axe temporel et celui du master et refuse de démarrer.
@@ -137,7 +145,7 @@ export function TabView({ trackId }) {
       api?.destroy()
       apiRef.current = null
     }
-  }, [tablature, master, track])
+  }, [tablature, master, track, surMaster])
 
 
   // alphaTab doit suivre l'état du lecteur global, y compris quand la lecture
@@ -145,17 +153,17 @@ export function TabView({ trackId }) {
   // boucle : chacun ne réagit que si l'autre a réellement changé.
   useEffect(() => {
     const api = apiRef.current
-    if (!api?.player || etat !== 'pret') return
+    if (!surMaster || !api?.player || etat !== 'pret') return
     const alphaTabJoue = api.player.state === 1
     if (enCours && playing && !alphaTabJoue) api.play()
     else if ((!playing || !enCours) && alphaTabJoue) api.pause()
-  }, [playing, enCours, etat])
+  }, [surMaster, playing, enCours, etat])
 
   // La position du master pilote le curseur.
   useEffect(() => {
-    if (!enCours) return
+    if (!surMaster || !enCours) return
     apiRef.current?.player?.output?.updatePosition?.(time * 1000)
-  }, [time, enCours])
+  }, [surMaster, time, enCours])
 
   const choisirPiste = (index) => {
     const api = apiRef.current
@@ -181,7 +189,13 @@ export function TabView({ trackId }) {
       <header className="mb-4 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-2xl font-medium tracking-tight">{track.title}</h1>
-          <p className="mt-1 text-sm text-faint">Tablature · défile sur le master</p>
+          <p className="mt-1 text-sm text-faint">
+            {surMaster
+              ? 'Tablature · défile sur le master'
+              : master
+                ? 'Tablature · consultation seule, elle ne correspond pas encore à l’enregistrement'
+                : 'Tablature · consultation seule, pas d’enregistrement pour ce morceau'}
+          </p>
         </div>
         <a href={`#/track/${trackId}`}
           className="shrink-0 rounded-full bg-raised px-4 py-2 text-[13px] text-dim transition hover:bg-line-strong hover:text-bright">

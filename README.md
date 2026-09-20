@@ -129,6 +129,11 @@ Trois points ont demandé du temps, et méritent d'être notés :
   lecture. `media.meta.json` accepte un `tabOffset` par morceau pour les
   enregistrements qui ne commencent pas sur le premier temps.
 
+`media.meta.json` accepte un `tabSync` par morceau. À `false`, la tablature ne
+se cale pas sur l'enregistrement — c'est le cas du morceau 07, dont la
+partition n'est pas encore à jour. Elle se consulte alors en silence, sans
+barre de lecteur, ce qui vaut aussi pour un morceau sans master.
+
 Un fichier Guitar Pro porte toutes les pistes du morceau — Massacre en a cinq.
 alphaTab n'en grave qu'une à la fois : des pastilles permettent de choisir
 laquelle regarder, et la synchronisation survit au changement.

@@ -162,6 +162,9 @@ const tracks = trackIds.map((id) => {
     // Décalage en millisecondes entre le début du master et la première mesure
     // de la tablature. Un enregistrement commence rarement pile sur le temps.
     tabOffset: meta.tracks?.[id]?.tabOffset ?? 0,
+    // Faux quand la tablature ne correspond pas encore à l'enregistrement :
+    // la superposer au master n'aurait alors aucun sens.
+    tabSync: meta.tracks?.[id]?.tabSync ?? true,
     duration: master?.duration ?? Math.max(...own.map((i) => i.duration)),
     itemIds: own.map((i) => i.id),
   }

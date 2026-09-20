@@ -7,6 +7,7 @@
       "title": "Intro - #01",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 248,
       "itemIds": [
         "master-01",
@@ -21,6 +22,7 @@
       "title": "#02",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 186,
       "itemIds": [
         "master-02",
@@ -35,6 +37,7 @@
       "title": "#03",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 177,
       "itemIds": [
         "master-03",
@@ -49,6 +52,7 @@
       "title": "Massacre",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 192,
       "itemIds": [
         "master-04",
@@ -63,6 +67,7 @@
       "title": "We Fail",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 256,
       "itemIds": [
         "master-05",
@@ -76,6 +81,7 @@
       "title": "#06",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 188,
       "itemIds": [
         "master-06",
@@ -89,6 +95,7 @@
       "title": "#07",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": false,
       "duration": 190,
       "itemIds": [
         "master-07"
@@ -100,6 +107,7 @@
       "title": "#08",
       "notes": null,
       "tabOffset": 0,
+      "tabSync": true,
       "duration": 201,
       "itemIds": [
         "master-08"
