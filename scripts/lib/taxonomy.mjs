@@ -15,6 +15,10 @@ const KINDS = {
   'audio/master': { kind: 'master', instrument: false },
   'audio/backing-tracks': { kind: 'backing-track', instrument: true },
   'video/playthrough': { kind: 'playthrough', instrument: true },
+  // Un document n'a ni support ni durée : il se range à la racine, sur deux
+  // segments. La table déclare la profondeur, ce qui évite un cas particulier
+  // dans l'analyse du chemin.
+  tabs: { kind: 'tab', instrument: false, document: true },
 }
 
 export function parsePath(rel) {
@@ -26,13 +30,13 @@ export function parsePath(rel) {
   const base = basename(file, extname(file))
   if (!/^\d{2,}$/.test(base)) return null
 
-  const nature = KINDS[`${parts[0]}/${parts[1]}`]
+  const nature = KINDS[`${parts[0]}/${parts[1]}`] ?? KINDS[parts[0]]
   if (!nature) return null
 
   // Le nombre de segments doit correspondre exactement : une nature à
   // instrument sans instrument, ou l'inverse, est une erreur de rangement
   // qu'il vaut mieux signaler que rattraper au jugé.
-  const expected = nature.instrument ? 4 : 3
+  const expected = nature.document ? 2 : nature.instrument ? 4 : 3
   if (parts.length !== expected) return null
 
   const instrument = nature.instrument ? parts[2] : null
@@ -42,6 +46,7 @@ export function parsePath(rel) {
     trackId: base,
     instrument,
     id: instrument ? `${nature.kind}-${instrument}-${base}` : `${nature.kind}-${base}`,
+    document: Boolean(nature.document),
     dir: parts.slice(0, -1).join('/'),
     base,
     ext,
@@ -49,6 +54,7 @@ export function parsePath(rel) {
 }
 
 export const KIND_LABELS = {
+  tab: 'Tablature',
   master: 'Master',
   'backing-track': 'Backing track',
   playthrough: 'Playthrough',
@@ -56,7 +62,7 @@ export const KIND_LABELS = {
 
 // Ordre d'affichage des angles d'un morceau : l'œuvre d'abord, puis ce qui
 // s'en détache, puis ce qui sert à jouer dessus.
-export const KIND_ORDER = ['master', 'playthrough', 'backing-track']
+export const KIND_ORDER = ['master', 'playthrough', 'backing-track', 'tab']
 
 export const INSTRUMENT_LABELS = {
   bass: 'Bass',

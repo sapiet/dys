@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
-import { getTrack, anglesOf, resolveUrl, isVideo, absoluteUrl } from '../lib/media'
+import { getTrack, anglesOf, resolveUrl, isVideo, absoluteUrl, documentFor } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
-import { duration as fmt, megabytes } from '../lib/format'
+import { duration as fmt, fileSize } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
 import { ShareButtons } from '../components/ShareButtons'
 import { navigate } from '../lib/useHashRoute'
@@ -28,6 +28,9 @@ export function TrackView({ trackId, groupId }) {
     ?? angles[0]
   const live = current?.id === selected.id
   const poster = selected.poster ?? angles.find((a) => a.poster)?.poster
+  // La tablature n'est pas un angle : elle ne se joue pas, et l'ajouter aux
+  // pastilles ferait croire le contraire.
+  const tablature = documentFor(trackId)
 
   // Un lien qui précise l'angle désigne un média : on tente de le lancer, comme
   // dans la vue Médias. Sans angle, rien n'est désigné et on ne touche à rien.
@@ -88,6 +91,7 @@ export function TrackView({ trackId, groupId }) {
       </div>
 
       <div className="mt-3 flex flex-wrap justify-end gap-2">
+        {tablature && <DownloadButton item={tablature} label text="Tablature" />}
         <ShareButtons url={absoluteUrl(`/track/${trackId}/${angleId(selected)}`)}
           title={`${track.title} — ${selected.label}`} />
         <DownloadButton item={selected} label />
@@ -108,7 +112,7 @@ export function TrackView({ trackId, groupId }) {
         </div>
         <div>
           <dt className="text-xs text-faint">Poids</dt>
-          <dd>{megabytes(selected.sources[0].bytes)}</dd>
+          <dd>{fileSize(selected.sources[0].bytes)}</dd>
         </div>
       </dl>
     </>

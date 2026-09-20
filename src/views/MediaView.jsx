@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { groups, getTrack, resolveUrl, isVideo, absoluteUrl } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { navigate } from '../lib/useHashRoute'
-import { duration, totalDuration } from '../lib/format'
+import { duration, totalDuration, fileSize } from '../lib/format'
 import { DownloadButton } from '../components/DownloadButton'
 import { ShareButtons } from '../components/ShareButtons'
 
@@ -141,9 +141,9 @@ export function MediaView({ route }) {
       )}
 
       <p className="mb-2 text-xs text-faint">
-        {group?.items.length} média{group?.items.length > 1 ? 's' : ''}
-        {' · '}
-        {totalDuration((group?.items ?? []).reduce((sum, i) => sum + i.duration, 0))}
+        {group?.items.length} {group?.documents ? 'tablature' : 'média'}{group?.items.length > 1 ? 's' : ''}
+        {/* Un document n'a pas de durée : le cumul n'aurait rien à additionner. */}
+        {!group?.documents && ` · ${totalDuration((group?.items ?? []).reduce((sum, i) => sum + i.duration, 0))}`}
       </p>
 
       <div className="flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line">
@@ -154,6 +154,17 @@ export function MediaView({ route }) {
               className={`flex items-center gap-3 pr-2 transition-colors hover:bg-surface ${
                 isCurrent ? 'bg-surface' : ''
               }`}>
+              {item.document ? (
+                <div className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5">
+                  <div className="grid aspect-video w-20 shrink-0 place-items-center rounded-md bg-raised sm:w-24">
+                    <span className="text-[11px] uppercase text-faint">{item.sources[0].format}</span>
+                  </div>
+                  <div className="min-w-0">
+                    <p className="truncate text-sm">{getTrack(item.trackId)?.title}</p>
+                    <p className="text-xs text-faint">Guitar Pro · {fileSize(item.sources[0].bytes)}</p>
+                  </div>
+                </div>
+              ) : (
               <button onClick={() => start(item)}
                 className="flex min-w-0 flex-1 items-center gap-3 px-3 py-2.5 text-left">
               <div className="relative grid aspect-video w-20 shrink-0 place-items-center overflow-hidden rounded-md bg-raised sm:w-24">
@@ -176,6 +187,7 @@ export function MediaView({ route }) {
                 </p>
               </div>
               </button>
+              )}
               <ShareButtons compact
                 url={absoluteUrl(`/media/${group.id}/${item.trackId}`)}
                 title={getTrack(item.trackId)?.title ?? item.trackId} />

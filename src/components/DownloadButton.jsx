@@ -1,5 +1,5 @@
 import { primarySource, resolveUrl, downloadName, getTrack } from '../lib/media'
-import { megabytes } from '../lib/format'
+import { fileSize } from '../lib/format'
 import { CONTROLE_ICONE, CONTROLE_LIBELLE } from './controlStyles'
 
 const ICON = 'M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'
@@ -7,13 +7,13 @@ const ICON = 'M12 3v12m0 0-4-4m4 4 4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2'
 // `download` ne s'applique qu'aux fichiers de même origine. Le jour où les
 // médias partiront sur un bucket externe, le navigateur ouvrira le fichier au
 // lieu de l'enregistrer : il faudra alors passer par un blob.
-export function DownloadButton({ item, label = false }) {
+export function DownloadButton({ item, label = false, text = 'Télécharger' }) {
   const track = getTrack(item.trackId)
   const source = primarySource(item)
 
   return (
     <a href={resolveUrl(source.path)} download={downloadName(item, track)}
-      aria-label={`Télécharger ${track?.title} — ${item.label}`}
+      aria-label={`${text} ${track?.title} — ${item.label}`}
       className={label ? `${CONTROLE_LIBELLE} text-sm` : CONTROLE_ICONE}>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6"
         strokeLinecap="round" strokeLinejoin="round" className="size-4" aria-hidden="true">
@@ -23,8 +23,8 @@ export function DownloadButton({ item, label = false }) {
           `aria-label` porte l'intention pour les lecteurs d'écran. */}
       {label && (
         <span>
-          <span className="hidden sm:inline">Télécharger · </span>
-          {megabytes(source.bytes)}
+          <span className="hidden sm:inline">{text} · </span>
+          {fileSize(source.bytes)}
         </span>
       )}
     </a>

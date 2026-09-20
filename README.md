@@ -83,6 +83,21 @@ effet s'en charge, en regardant laquelle des deux sources vient de changer —
 deux effets séparés se combattaient, celui qui restaure depuis l'URL annulant
 celui qui suit l'enchaînement.
 
+### Documents
+
+Une tablature ne se joue pas : ni durée, ni piste, ni file de lecture. Le
+manifeste les tient donc à l'écart des `items`, dans un tableau `documents`.
+Les mêler aurait exigé des garde-fous dans tout le code de lecture, pour deux
+fichiers.
+
+Elles apparaissent comme un quatrième groupe dans la vue Médias, avec
+téléchargement, copie et partage mais sans bouton de lecture, et sur la page
+d'un morceau à côté des autres commandes.
+
+**Elles ne sont pas affichées dans le navigateur** : un fichier Guitar Pro
+demande une bibliothèque de rendu dédiée. Le visiteur télécharge et ouvre avec
+son propre logiciel.
+
 ### Le lecteur
 
 Deux éléments média, un seul actif à la fois : un `<audio>` persistant monté à
@@ -194,8 +209,16 @@ media/audio/backing-tracks/drums/01.mp3   -> backing track, batterie
 media/video/playthrough/bass/01.mp4       -> playthrough, basse
 ```
 
+Les documents, qui n'ont ni support ni durée, se rangent à la racine sur deux
+segments :
+
+```
+media/tabs/04.gp5                         -> tablature du morceau 04
+```
+
 Les natures connues sont déclarées dans `scripts/lib/taxonomy.mjs`, seul
-endroit à modifier pour en ajouter une — l'interface n'a rien à savoir, les
+endroit à modifier pour en ajouter une — la table y déclare aussi la
+profondeur attendue, ce qui évite un cas particulier dans l'analyse du chemin — l'interface n'a rien à savoir, les
 regroupements de la vue « Médias » étant dérivés dans le manifeste.
 
 Le numéro de morceau est sur deux chiffres. Le nombre de segments doit

@@ -11,8 +11,11 @@ export function resolveUrl(path) {
 
 export const tracks = manifest.tracks
 export const items = manifest.items
+export const documents = manifest.documents ?? []
 
-const byId = new Map(items.map((item) => [item.id, item]))
+// Documents et items partagent la même forme — d'où un seul index — mais
+// seuls les items entrent dans les files de lecture et les listes d'angles.
+const byId = new Map([...items, ...documents].map((entry) => [entry.id, entry]))
 
 export function getItem(id) {
   return byId.get(id) ?? null
@@ -39,6 +42,11 @@ export function isVideo(item) {
 
 // Les regroupements viennent du manifeste, imbriqués : nature puis instrument.
 // Ajouter une nature ou un instrument ne demande donc rien ici.
+// La tablature d'un morceau, s'il en a une.
+export function documentFor(trackId) {
+  return documents.find((d) => d.trackId === trackId) ?? null
+}
+
 export function groups() {
   const resolve = (ids) => ids.map((id) => byId.get(id)).filter(Boolean)
   return manifest.groups.map((nature) => ({

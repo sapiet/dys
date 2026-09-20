@@ -68,7 +68,9 @@ for (const file of files.sort()) {
     continue
   }
 
-  const info = await probe(file)
+  // Un document n'est pas un média : `ffprobe` n'en tirerait rien. Il est copié
+  // tel quel, sans sondage ni ré-encodage.
+  const info = meta.document ? { hasVideo: false, bytes: 0 } : await probe(file)
   const destExt = info.hasVideo ? 'mp4' : meta.ext
   const dest = join(OUT, meta.dir, `${meta.base}.${destExt}`)
   const poster = info.hasVideo ? join(OUT, meta.dir, `${meta.base}.jpg`) : null
@@ -85,14 +87,15 @@ for (const file of files.sort()) {
     && info.height <= MAX_HEIGHT
     && info.bitrate <= PASSTHROUGH_BITRATE
 
-  const action = !info.hasVideo ? 'copie' : passthrough ? 'remux' : 'ré-encodage'
+  const action = meta.document ? 'document' : !info.hasVideo ? 'copie' : passthrough ? 'remux' : 'ré-encodage'
   console.log(`${action.padEnd(12)} ${rel}`)
   if (dry) { built++; continue }
 
   await mkdir(dirname(dest), { recursive: true })
 
   if (!info.hasVideo) {
-    // MP3 320 kbps : ré-encoder en lossy->lossy dégraderait pour ~20 Mo gagnés.
+    // Documents, et MP3 320 kbps dont un ré-encodage lossy vers lossy
+    // dégraderait la qualité pour ~20 Mo gagnés.
     await copyFile(file, dest)
   } else if (passthrough) {
     await ffmpeg(['-i', file, '-c', 'copy', '-movflags', '+faststart', dest])

@@ -1,6 +1,7 @@
 import { readdir, readFile, writeFile, mkdir } from 'node:fs/promises'
 import { join, relative, dirname, extname, basename } from 'node:path'
 import { parsePath, labelFor, KIND_LABELS, KIND_ORDER } from './lib/taxonomy.mjs'
+import { stat } from 'node:fs/promises'
 import { probe } from './lib/ffmpeg.mjs'
 
 const OUT = 'public/media'
@@ -35,6 +36,7 @@ const meta = await readMeta()
 const files = (await walk(OUT)).sort()
 const warnings = []
 const items = new Map()
+const documents = []
 
 for (const file of files) {
   const rel = relative(OUT, file)
@@ -43,6 +45,25 @@ for (const file of files) {
   const parsed = parsePath(rel)
   if (!parsed) {
     warnings.push(`hors taxonomie, ignoré : ${rel}`)
+    continue
+  }
+
+  // Les documents sont tenus à l'écart des items : tout le code de lecture
+  // suppose une durée et une piste. Les mêler exigerait des garde-fous partout.
+  if (parsed.document) {
+    const { size } = await stat(file)
+    documents.push({
+      id: parsed.id,
+      kind: parsed.kind,
+      trackId: parsed.trackId,
+      instrument: null,
+      label: labelFor(parsed),
+      document: true,
+      duration: null,
+      orientation: null,
+      poster: null,
+      sources: [{ format: parsed.ext, path: rel, bytes: size, width: null, height: null }],
+    })
     continue
   }
 
@@ -119,6 +140,17 @@ for (const item of list) {
   child.itemIds.push(item.id)
 }
 
+if (documents.length) {
+  documents.sort((a, b) => a.trackId.localeCompare(b.trackId))
+  groups.push({
+    id: 'tab',
+    label: KIND_LABELS.tab,
+    documents: true,
+    itemIds: documents.map((d) => d.id),
+    children: [],
+  })
+}
+
 const tracks = trackIds.map((id) => {
   const own = list.filter((i) => i.trackId === id)
   const master = own.find((i) => i.kind === 'master')
@@ -139,10 +171,13 @@ for (const id of Object.keys(meta.tracks ?? {})) {
 await mkdir(dirname(MANIFEST), { recursive: true })
 await writeFile(
   MANIFEST,
-  `${JSON.stringify({ baseUrl: 'media/', tracks, groups, items: list }, null, 2)}\n`,
+  `${JSON.stringify({ baseUrl: 'media/', tracks, groups, items: list, documents }, null, 2)}\n`,
 )
 
-console.log(`${tracks.length} morceau(x), ${list.length} item(s), ${groups.length} groupe(s) -> ${MANIFEST}`)
+console.log(
+  `${tracks.length} morceau(x), ${list.length} item(s), ${documents.length} document(s),`
+  + ` ${groups.length} groupe(s) -> ${MANIFEST}`,
+)
 if (warnings.length) {
   console.log('\nAvertissements :')
   for (const w of warnings) console.log(`  ${w}`)

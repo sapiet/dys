@@ -5,7 +5,10 @@ export function duration(seconds) {
   return `${m}:${String(s).padStart(2, '0')}`
 }
 
-export function megabytes(bytes) {
+// Une tablature pèse quelques dizaines de kilo-octets : arrondie en Mo, elle
+// s'afficherait « 0 Mo ».
+export function fileSize(bytes) {
+  if (bytes < 1e6) return `${Math.round(bytes / 1e3)} Ko`
   return `${Math.round(bytes / 1e6)} Mo`
 }
 

@@ -161,6 +161,16 @@
           ]
         }
       ]
+    },
+    {
+      "id": "tab",
+      "label": "Tablature",
+      "documents": true,
+      "itemIds": [
+        "tab-04",
+        "tab-07"
+      ],
+      "children": []
     }
   ],
   "items": [
@@ -639,6 +649,48 @@
           "format": "mp3",
           "path": "audio/master/08.mp3",
           "bytes": 8053990,
+          "width": null,
+          "height": null
+        }
+      ]
+    }
+  ],
+  "documents": [
+    {
+      "id": "tab-04",
+      "kind": "tab",
+      "trackId": "04",
+      "instrument": null,
+      "label": "Tablature",
+      "document": true,
+      "duration": null,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "gp5",
+          "path": "tabs/04.gp5",
+          "bytes": 61663,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
+      "id": "tab-07",
+      "kind": "tab",
+      "trackId": "07",
+      "instrument": null,
+      "label": "Tablature",
+      "document": true,
+      "duration": null,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "gp5",
+          "path": "tabs/07.gp5",
+          "bytes": 39336,
           "width": null,
           "height": null
         }
