@@ -78,6 +78,16 @@
       ]
     },
     {
+      "id": "07",
+      "number": 7,
+      "title": "#07",
+      "notes": null,
+      "duration": 190,
+      "itemIds": [
+        "master-07"
+      ]
+    },
+    {
       "id": "08",
       "number": 8,
       "title": "#08",
@@ -99,6 +109,7 @@
         "master-04",
         "master-05",
         "master-06",
+        "master-07",
         "master-08"
       ],
       "children": []
@@ -588,6 +599,26 @@
           "format": "mp3",
           "path": "audio/backing-tracks/drums/06.mp3",
           "bytes": 4390055,
+          "width": null,
+          "height": null
+        }
+      ]
+    },
+    {
+      "id": "master-07",
+      "kind": "master",
+      "trackId": "07",
+      "instrument": null,
+      "label": "Master",
+      "instrumentLabel": null,
+      "duration": 190,
+      "orientation": null,
+      "poster": null,
+      "sources": [
+        {
+          "format": "mp3",
+          "path": "audio/master/07.mp3",
+          "bytes": 7591100,
           "width": null,
           "height": null
         }
