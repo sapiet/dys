@@ -22,6 +22,10 @@ export function TabView({ trackId }) {
   const apiRef = useRef(null)
   const [etat, setEtat] = useState('chargement')
   const [erreur, setErreur] = useState(null)
+  // Un fichier Guitar Pro porte toutes les pistes du morceau ; alphaTab n'en
+  // grave qu'une à la fois.
+  const [pistes, setPistes] = useState([])
+  const [pisteActive, setPisteActive] = useState(0)
 
   const track = getTrack(trackId)
   const tablature = documentFor(trackId)
@@ -107,6 +111,7 @@ export function TabView({ trackId }) {
 
       api.scoreLoaded.on((score) => {
         brancher()
+        setPistes((score?.tracks ?? []).map((t) => ({ index: t.index, nom: t.name?.trim() || `Piste ${t.index + 1}` })))
 
         // Sans point de synchronisation, alphaTab n'a aucune correspondance
         // entre son axe temporel et celui du master et refuse de démarrer.
@@ -152,6 +157,15 @@ export function TabView({ trackId }) {
     apiRef.current?.player?.output?.updatePosition?.(time * 1000)
   }, [time, enCours])
 
+  const choisirPiste = (index) => {
+    const api = apiRef.current
+    const piste = api?.score?.tracks?.[index]
+    if (!piste) return
+    setPisteActive(index)
+    setEtat('chargement')
+    api.renderTracks([piste])
+  }
+
   if (!track) return <p className="text-dim">Morceau introuvable.</p>
   if (!tablature) {
     return (
@@ -174,6 +188,21 @@ export function TabView({ trackId }) {
           Retour au morceau
         </a>
       </header>
+
+      {pistes.length > 1 && (
+        <div className="mb-4 flex flex-wrap gap-2">
+          {pistes.map((piste) => (
+            <button key={piste.index} onClick={() => choisirPiste(piste.index)}
+              className={`rounded-full px-3 py-1.5 text-[13px] transition-colors ${
+                piste.index === pisteActive
+                  ? 'bg-accent text-white'
+                  : 'border border-line-strong text-dim hover:text-bright'
+              }`}>
+              {piste.nom}
+            </button>
+          ))}
+        </div>
+      )}
 
       {etat === 'chargement' && <p className="mb-2 text-sm text-faint">Gravure de la partition…</p>}
       {etat === 'erreur' && (

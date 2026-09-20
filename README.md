@@ -129,6 +129,10 @@ Trois points ont demandé du temps, et méritent d'être notés :
   lecture. `media.meta.json` accepte un `tabOffset` par morceau pour les
   enregistrements qui ne commencent pas sur le premier temps.
 
+Un fichier Guitar Pro porte toutes les pistes du morceau — Massacre en a cinq.
+alphaTab n'en grave qu'une à la fois : des pastilles permettent de choisir
+laquelle regarder, et la synchronisation survit au changement.
+
 Le fichier `.gp5` reste téléchargeable pour qui veut l'éditer.
 
 ### Le lecteur
