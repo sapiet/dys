@@ -139,6 +139,11 @@ se cale pas sur l'enregistrement — c'est le cas du morceau 07, dont la
 partition n'est pas encore à jour. Elle se consulte alors en silence, sans
 barre de lecteur, ce qui vaut aussi pour un morceau sans master.
 
+L'affichage se limite à la tablature, sans la portée en notation — sauf pour
+les percussions, qui n'ont pas de tablature : le profil « Tab » n'y trouve
+aucune portée à graver et lève une erreur. Le profil est donc choisi selon la
+piste.
+
 Un fichier Guitar Pro porte toutes les pistes du morceau — Massacre en a cinq.
 alphaTab n'en grave qu'une à la fois : des pastilles permettent de choisir
 laquelle regarder, et la synchronisation survit au changement.

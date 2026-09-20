@@ -30,6 +30,7 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
 
   const actions = useRef({})
   actions.current = { seek }
+  const profilRef = useRef(() => {})
 
   useEffect(() => {
     if (!tablature) return
@@ -89,7 +90,18 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
         }
       }
 
+      // Tablature seule pour les cordes. Une percussion n'en a pas : le profil
+      // « Tab » n'y trouve aucune portée à graver et lève une erreur.
+      const appliquerProfil = (instance, piste) => {
+        const percussion = piste?.staves?.some((s) => s.isPercussion)
+        instance.settings.display.staveProfile = percussion
+          ? alphaTab.StaveProfile.Default
+          : alphaTab.StaveProfile.Tab
+        instance.updateSettings()
+      }
+
       api.scoreLoaded.on((score) => {
+        appliquerProfil(api, score?.tracks?.[0])
         setPistes((score?.tracks ?? []).map((t) => ({
           index: t.index,
           nom: t.name?.trim() || `Piste ${t.index + 1}`,
@@ -112,6 +124,7 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
         premiere.syncPoints = [point]
         api.updateSyncPoints()
       })
+      profilRef.current = (piste) => appliquerProfil(api, piste)
       api.midiLoaded.on(brancher)
       api.renderFinished.on(brancher)
     })().catch((e) => { if (!annule) { setErreur(String(e?.message ?? e)); setEtat('erreur') } })
@@ -134,9 +147,13 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
   }, [sync, playing, enCours, etat])
 
   useEffect(() => {
-    if (!sync || !enCours) return
+    // Tant que la gravure n'est pas finie, alphaTab n'a pas ses données de
+    // tempo : lui envoyer une position le fait déréférencer du vide. Le cas se
+    // produit quand on ouvre la tablature alors que la lecture est déjà en
+    // cours.
+    if (!sync || !enCours || etat !== 'pret') return
     apiRef.current?.player?.output?.updatePosition?.(time * 1000)
-  }, [sync, time, enCours])
+  }, [sync, time, enCours, etat])
 
   const choisirPiste = (index) => {
     const api = apiRef.current
@@ -144,6 +161,7 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
     if (!piste) return
     setPisteActive(index)
     setEtat('chargement')
+    profilRef.current(piste)
     api.renderTracks([piste])
   }
 
