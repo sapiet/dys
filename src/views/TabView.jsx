@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { getTrack, documentFor, resolveUrl, items } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
-import { duration as fmt } from '../lib/format'
 
 // La tablature défile sur le master, sans passer par le synthétiseur
 // d'alphaTab — le vrai enregistrement sonne mieux que du MIDI.
@@ -27,7 +26,7 @@ export function TabView({ trackId }) {
   const track = getTrack(trackId)
   const tablature = documentFor(trackId)
   const master = items.find((i) => i.trackId === trackId && i.kind === 'master')
-  const { current, playing, time, play, toggle, seek, mediaElement } = usePlayer()
+  const { current, playing, time, select, seek, mediaElement } = usePlayer()
 
   const enCours = current?.id === master?.id
 
@@ -37,6 +36,13 @@ export function TabView({ trackId }) {
   // lecture. Seul le déplacement remonte, quand on clique une mesure.
   const actions = useRef({})
   actions.current = { seek }
+
+  // Le master est désigné dès l'arrivée, sans être lancé : la barre du lecteur
+  // est là d'emblée, et c'est elle qui commande. La page n'a donc pas besoin
+  // de son propre bouton.
+  useEffect(() => {
+    if (master && current?.id !== master.id) select(master)
+  }, [master, current?.id, select])
 
   useEffect(() => {
     if (!tablature || !master) return
@@ -168,20 +174,6 @@ export function TabView({ trackId }) {
           Retour au morceau
         </a>
       </header>
-
-      <div className="mb-4 flex items-center gap-3">
-        <button onClick={() => (enCours ? toggle() : master && play(master))}
-          disabled={etat !== 'pret' || !master}
-          aria-label={enCours && playing ? 'Pause' : 'Lecture'}
-          className="grid size-11 shrink-0 place-items-center rounded-full bg-accent text-white transition disabled:opacity-40">
-          <svg viewBox="0 0 24 24" fill="currentColor" className="size-5" aria-hidden="true">
-            {enCours && playing ? <path d="M8 5h3v14H8zM13 5h3v14h-3z" /> : <path d="M8 5.5v13l11-6.5z" />}
-          </svg>
-        </button>
-        <span className="text-sm tabular-nums text-faint">
-          {fmt(enCours ? time : 0)} / {fmt(master?.duration ?? 0)}
-        </span>
-      </div>
 
       {etat === 'chargement' && <p className="mb-2 text-sm text-faint">Gravure de la partition…</p>}
       {etat === 'erreur' && (

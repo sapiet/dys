@@ -99,6 +99,10 @@ d'un morceau à côté des autres commandes.
 `#/tab/<morceau>` grave la partition avec alphaTab et fait défiler le curseur
 sur l'enregistrement — pas sur un synthétiseur MIDI.
 
+Le master est désigné dès l'arrivée sur la page, sans être lancé : la barre du
+lecteur est présente d'emblée et c'est elle qui commande. La page n'a pas de
+bouton à elle, qui ferait doublon.
+
 **alphaTab suit, il ne commande pas.** Le lecteur global garde l'élément audio ;
 alphaTab reçoit un gestionnaire dont `play` et `pause` sont volontairement
 vides, et sa position est alimentée par le temps du lecteur. Les deux sens de
