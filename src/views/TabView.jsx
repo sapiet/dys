@@ -55,6 +55,11 @@ export function TabView({ trackId }) {
           // du site. Le repli SPA y renvoyait index.html : alphaTab recevait du
           // HTML pour une police, et le rendu ne démarrait jamais.
           fontDirectory: `${import.meta.env.BASE_URL}font/`,
+          // Rendu sur le fil principal. Le worker d'alphaTab ne résout pas ses
+          // imports internes avec notre `base` en développement, et pèse 2,2 Mo
+          // en production. La gravure des 93 mesures de Massacre prend 43 ms :
+          // le fil principal suffit largement.
+          useWorkers: false,
         },
         display: { resources: COULEURS },
         player: {

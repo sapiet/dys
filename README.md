@@ -108,6 +108,10 @@ déplacement remonte, quand on clique une mesure.
 
 Trois points ont demandé du temps, et méritent d'être notés :
 
+- **Les workers sont désactivés** (`core.useWorkers: false`). Celui d'alphaTab
+  ne résout pas ses imports internes avec notre `base` et fait échouer le
+  serveur de développement. La gravure des 93 mesures prend 43 ms : le fil
+  principal suffit.
 - **La police de notation.** Le plugin Vite la fait chercher à côté du script
   d'alphaTab alors qu'il la copie à la racine ; le repli SPA renvoyait
   `index.html`, et le rendu ne démarrait jamais. D'où le `fontDirectory`
