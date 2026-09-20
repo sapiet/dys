@@ -35,7 +35,10 @@ export function MediaView({ route }) {
   const arrivee = useRef(true)
 
   useEffect(() => {
-    if (!group) return
+    // Un groupe de documents n'a rien à donner au lecteur : une tablature ne
+    // se joue pas. Sans cette garde, ouvrir #/media/tab/04 appelait play() sur
+    // un fichier Guitar Pro et faisait apparaître la barre de lecture.
+    if (!group || group.documents) return
     const routeAChange = route.trackId !== dernierRoute.current
     const mediaAChange = current?.id !== dernierMedia.current
     const estArrivee = arrivee.current
@@ -148,7 +151,11 @@ export function MediaView({ route }) {
 
       <div className="flex flex-col divide-y divide-line overflow-hidden rounded-xl border border-line">
         {group?.items.map((item) => {
-          const isCurrent = current?.id === item.id
+          // Pour un document, c'est l'URL qui désigne la ligne : aucun lecteur
+          // ne peut s'en charger.
+          const isCurrent = item.document
+            ? route.trackId === item.trackId
+            : current?.id === item.id
           return (
             <div key={item.id}
               className={`flex items-center gap-3 pr-2 transition-colors hover:bg-surface ${
