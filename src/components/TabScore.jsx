@@ -16,7 +16,7 @@ const COULEURS = {
   scoreInfoColor: '#e6ebf3',
 }
 
-export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[70vh]' }) {
+export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[70vh]', onPistes }) {
   const surfaceRef = useRef(null)
   const apiRef = useRef(null)
   const [etat, setEtat] = useState('chargement')
@@ -95,6 +95,7 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
           nom: t.name?.trim() || `Piste ${t.index + 1}`,
         })))
         setPisteActive(0)
+        onPistes?.(score?.tracks?.length ?? 0)
         brancher()
         if (!sync) return
 
@@ -120,7 +121,7 @@ export function TabScore({ trackId, master, sync, offset = 0, hauteur = 'max-h-[
       api?.destroy()
       apiRef.current = null
     }
-  }, [tablature, master, sync, offset])
+  }, [tablature, master, sync, offset, onPistes])
 
   // alphaTab suit l'état du lecteur. La comparaison évite la boucle : chacun
   // ne réagit que si l'autre a réellement changé.

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getTrack, anglesOf, resolveUrl, isVideo, absoluteUrl, documentFor } from '../lib/media'
 import { usePlayer } from '../player/PlayerContext'
 import { duration as fmt, fileSize } from '../lib/format'
@@ -36,6 +36,7 @@ export function TrackView({ trackId, groupId }) {
   // navigation, mais elle n'est pas un média : elle n'entre pas dans `angles`,
   // que tout le code de lecture parcourt.
   const surTablature = Boolean(tablature) && groupId === 'tab'
+  const [pistes, setPistes] = useState(0)
   const master = angles.find((a) => a.kind === 'master')
 
   // Un lien qui précise l'angle désigne un média : on tente de le lancer, comme
@@ -94,7 +95,8 @@ export function TrackView({ trackId, groupId }) {
       {surTablature ? (
         <TabScore trackId={trackId} master={master}
           sync={Boolean(master) && track.tabSync !== false}
-          offset={track.tabOffset ?? 0} hauteur="max-h-[60vh]" />
+          offset={track.tabOffset ?? 0} hauteur="max-h-[60vh]"
+          onPistes={setPistes} />
       ) : (
       <div className="relative aspect-video overflow-hidden rounded-xl border border-line bg-surface">
         {live && isVideo(selected) ? (
@@ -118,29 +120,46 @@ export function TrackView({ trackId, groupId }) {
       </div>
       )}
 
+      {/* Les commandes suivent l'angle affiché : sur la tablature, c'est le
+          fichier Guitar Pro qu'on partage et qu'on télécharge. */}
       <div className="mt-3 flex flex-wrap justify-end gap-2">
-        {tablature && <DownloadButton item={tablature} />}
-        <ShareButtons url={absoluteUrl(`/track/${trackId}/${angleId(selected)}`)}
-          title={`${track.title} — ${selected.label}`} />
-        <DownloadButton item={selected} label />
+        <ShareButtons url={absoluteUrl(`/track/${trackId}/${surTablature ? 'tab' : angleId(selected)}`)}
+          title={`${track.title} — ${surTablature ? tablature.label : selected.label}`} />
+        <DownloadButton item={surTablature ? tablature : selected} label />
       </div>
 
+      {/* Une tablature n'a ni durée ni définition : la même grille mentirait. */}
       <dl className="mt-6 grid grid-cols-2 gap-x-6 gap-y-2 border-t border-line pt-5 text-sm sm:grid-cols-4">
         <div>
           <dt className="text-xs text-faint">Angle</dt>
-          <dd>{selected.label}</dd>
+          <dd>{surTablature ? tablature.label : selected.label}</dd>
         </div>
-        <div>
-          <dt className="text-xs text-faint">Durée</dt>
-          <dd className="tabular-nums">{fmt(selected.duration)}</dd>
-        </div>
-        <div>
-          <dt className="text-xs text-faint">Définition</dt>
-          <dd>{isVideo(selected) ? `${selected.sources[0].width}×${selected.sources[0].height}` : 'Audio'}</dd>
-        </div>
+        {surTablature ? (
+          <>
+            <div>
+              <dt className="text-xs text-faint">Format</dt>
+              <dd>Guitar Pro</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-faint">Pistes</dt>
+              <dd>{pistes || '—'}</dd>
+            </div>
+          </>
+        ) : (
+          <>
+            <div>
+              <dt className="text-xs text-faint">Durée</dt>
+              <dd className="tabular-nums">{fmt(selected.duration)}</dd>
+            </div>
+            <div>
+              <dt className="text-xs text-faint">Définition</dt>
+              <dd>{isVideo(selected) ? `${selected.sources[0].width}×${selected.sources[0].height}` : 'Audio'}</dd>
+            </div>
+          </>
+        )}
         <div>
           <dt className="text-xs text-faint">Poids</dt>
-          <dd>{fileSize(selected.sources[0].bytes)}</dd>
+          <dd>{fileSize((surTablature ? tablature : selected).sources[0].bytes)}</dd>
         </div>
       </dl>
     </>
