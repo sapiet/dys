@@ -29,12 +29,25 @@ export function PlayerProvider({ children }) {
   const timeRef = useRef(0)
   const pendingSeek = useRef(null)
 
+  // Un moteur externe peut prendre la place de l'élément média : la tablature
+  // produit son son elle-même et ne saurait que faire d'une source. Le lecteur
+  // lui envoie alors ses ordres au lieu d'un fichier, et reçoit sa position en
+  // retour — la barre du bas reste l'unique transport de l'application.
+  const engine = useRef(null)
+  const engineIdRef = useRef(null)
+  const [engineId, setEngineId] = useState(null)
+
+  // L'id courant hors du cycle de rendu : le moteur qui se retire doit savoir
+  // si un média a déjà pris sa place, et il l'apprend depuis une fermeture.
+  const currentIdRef = useRef(null)
+  currentIdRef.current = currentId
+
   const current = currentId ? getItem(currentId) : null
   const url = current ? resolveUrl(primarySource(current).path) : null
 
   // Chaque nature a son élément, et un seul. Faire porter une source vidéo au
   // <audio> de repli lui ferait télécharger le fichier une seconde fois.
-  const active = current ? (isVideo(current) ? videoEl : audioRef.current) : null
+  const active = current && !engineId ? (isVideo(current) ? videoEl : audioRef.current) : null
 
   useEffect(() => {
     if (!active || !url) return
@@ -62,6 +75,13 @@ export function PlayerProvider({ children }) {
   }, [active, url])
 
   useEffect(() => {
+    // Le moteur externe n'a ni source à charger ni promesse à attendre : on lui
+    // passe l'ordre tel quel.
+    if (engineId) {
+      if (playing) engine.current?.play()
+      else engine.current?.pause()
+      return
+    }
     if (!active) return
 
     if (!playing) {
@@ -85,11 +105,12 @@ export function PlayerProvider({ children }) {
     }
     active.addEventListener('canplay', start, { once: true })
     return () => active.removeEventListener('canplay', start)
-  }, [active, url, playing])
+  }, [active, url, playing, engineId])
 
   useEffect(() => {
-    if (active) active.volume = volume
-  }, [active, volume])
+    if (engineId) engine.current?.setVolume(volume)
+    else if (active) active.volume = volume
+  }, [active, volume, engineId])
 
   // L'élément qui vient de perdre la main doit se taire : sans ça, passer du
   // master à un playthrough laisse les deux jouer ensemble.
@@ -174,6 +195,47 @@ export function PlayerProvider({ children }) {
     setDuration(item.duration)
   }, [currentId])
 
+  // Confier la lecture à un moteur : il devient le média courant, à la position
+  // qu'on lui donne. L'élément qui jouait se tait de lui-même, n'étant plus
+  // l'élu. `resume` dit si la lecture se poursuit : changer de son au milieu
+  // d'un morceau ne l'interrompt pas, y arriver ne la déclenche pas.
+  const attachEngine = useCallback((item, controls, { at = 0, resume = false } = {}) => {
+    engine.current = controls
+    engineIdRef.current = item.id
+    setEngineId(item.id)
+    setQueue([item.id])
+    setCurrentId(item.id)
+    timeRef.current = at
+    setTime(at)
+    setDuration(0)
+    if (!resume) setPlaying(false)
+  }, [])
+
+  // Le moteur s'en va. Si un média a déjà pris sa place — on a choisi un autre
+  // angle — rien à défaire. Sinon plus rien n'est désigné, et la lecture
+  // s'arrête : sans ça, elle attendrait le prochain média pour se réveiller
+  // toute seule. `resume` la préserve, le temps de passer le relais.
+  const detachEngine = useCallback(({ resume = false } = {}) => {
+    const parti = engineIdRef.current
+    engine.current = null
+    engineIdRef.current = null
+    setEngineId(null)
+    if (currentIdRef.current !== parti) return
+    setCurrentId(null)
+    if (!resume) setPlaying(false)
+  }, [])
+
+  // Le moteur dit où il en est : sa position pendant qu'il joue, la durée que
+  // la partition lui donne, et l'arrêt qu'il décide seul en fin de morceau.
+  const reportEngine = useCallback((etat) => {
+    if (etat.time !== undefined) {
+      timeRef.current = etat.time
+      setTime(etat.time)
+    }
+    if (etat.duration !== undefined) setDuration(etat.duration)
+    if (etat.playing !== undefined) setPlaying(etat.playing)
+  }, [])
+
   const toggle = useCallback(() => {
     if (!currentId) return
     setBlocked(false)
@@ -185,7 +247,17 @@ export function PlayerProvider({ children }) {
   const seek = useCallback((seconds) => {
     timeRef.current = seconds
     setTime(seconds)
+    // La référence plutôt que l'état : le moteur peut s'être retiré à l'instant,
+    // et c'est justement là qu'on lui reprend sa position.
+    if (engine.current) {
+      engine.current.seek(seconds)
+      return
+    }
+    // Sans élément désigné — la tablature vient de rendre la main — la position
+    // est reportée comme au changement de source, et s'applique dès qu'un média
+    // reprend la main.
     if (active) active.currentTime = seconds
+    else pendingSeek.current = seconds
   }, [active])
 
   const setVolume = useCallback((v) => setVolumeState(v), [])
@@ -198,10 +270,11 @@ export function PlayerProvider({ children }) {
       mediaElement: active,
       videoMounted: Boolean(videoEl),
       play, select, switchTo, toggle, seek, setVolume, setVideoEl,
+      attachEngine, detachEngine, reportEngine,
       next: () => advance(1),
       previous: () => advance(-1),
     }),
-    [current, playing, time, duration, volume, queue, blocked, dismissBlocked, active, videoEl, play, select, switchTo, toggle, seek, setVolume, advance],
+    [current, playing, time, duration, volume, queue, blocked, dismissBlocked, active, videoEl, play, select, switchTo, toggle, seek, setVolume, advance, attachEngine, detachEngine, reportEngine],
   )
 
   return (

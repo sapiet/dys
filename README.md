@@ -117,10 +117,9 @@ déplacement remonte, quand on clique une mesure.
 
 Trois points ont demandé du temps, et méritent d'être notés :
 
-- **Les workers sont désactivés** (`core.useWorkers: false`). Celui d'alphaTab
-  ne résout pas ses imports internes avec notre `base` et fait échouer le
-  serveur de développement. La gravure des 93 mesures prend 43 ms : le fil
-  principal suffit.
+- **Le worker de gravure est désactivé** (`core.useWorkers: false`). La gravure
+  des 93 mesures prend 43 ms : le fil principal suffit. Le synthétiseur, lui, a
+  besoin du sien — voir plus bas.
 - **La police de notation.** Le plugin Vite la fait chercher à côté du script
   d'alphaTab alors qu'il la copie à la racine ; le repli SPA renvoyait
   `index.html`, et le rendu ne démarrait jamais. D'où le `fontDirectory`
@@ -136,8 +135,8 @@ Trois points ont demandé du temps, et méritent d'être notés :
 
 `media.meta.json` accepte un `tabSync` par morceau. À `false`, la tablature ne
 se cale pas sur l'enregistrement — c'est le cas du morceau 07, dont la
-partition n'est pas encore à jour. Elle se consulte alors en silence, sans
-barre de lecteur, ce qui vaut aussi pour un morceau sans master.
+partition n'est pas encore à jour. Le master n'est alors pas désigné, ce qui
+vaut aussi pour un morceau sans master : il ne reste que le synthétiseur.
 
 L'affichage se limite à la tablature, sans la portée en notation — sauf pour
 les percussions, qui n'ont pas de tablature : le profil « Tab » n'y trouve
@@ -149,6 +148,59 @@ alphaTab n'en grave qu'une à la fois : des pastilles permettent de choisir
 laquelle regarder, et la synchronisation survit au changement.
 
 Le fichier `.gp5` reste téléchargeable pour qui veut l'éditer.
+
+### Deux sons pour une même partition
+
+L'enregistrement dit ce qui a été joué, le synthétiseur d'alphaTab dit ce qui
+est écrit : l'écart entre les deux est justement ce qu'on vient vérifier sur une
+tablature. Un interrupteur, tout à droite de la ligne des pistes, passe de l'un
+à l'autre. Il porte le master, qui est l'état ordinaire de l'application :
+l'éteindre, c'est écouter la partition. Sans master à suivre,
+il n'y a rien à choisir et l'interrupteur disparaît — le morceau 07 se joue donc
+au synthétiseur, là où il se consultait en silence.
+
+**Un seul transport, toujours le même.** La barre du bas commande le
+synthétiseur comme elle commande un média : la tablature devient le média
+courant, le lecteur lui envoie ses ordres — lecture, déplacement, volume — et
+reçoit sa position en retour. Rien ne s'ajoute à l'écran, et les deux sons ne
+peuvent pas jouer ensemble.
+
+Le `PlayerProvider` appelle ça un moteur : `attachEngine` remplace l'élément
+média par des commandes, `reportEngine` fait le chemin inverse. Tout le reste de
+la barre — bouton, position, durée, volume — ignore à qui il parle.
+
+**Le synthétiseur ne naît qu'au premier appui sur lecture.** C'est cet ordre-là
+qui crée son worker et télécharge la banque de sons (954 Ko, déposée dans
+`public/soundfont/` par le plugin Vite au même titre que la police) ; le temps
+qu'elle arrive, la page l'annonce. Choisir alphaTab sans rien écouter ne coûte
+donc rien de plus que la partition.
+
+**La position musicale traverse la bascule, et la lecture avec elle.** Les deux
+axes se répondent au `tabOffset` près — c'est tout ce que dit le point de
+synchronisation — et le nouveau lecteur reprend là où l'autre en était, dans les
+deux sens, sans s'interrompre. Arriver sur une tablature en écoutant *un autre*
+morceau ne la lance pas pour autant : la lecture ne se poursuit que si c'est le
+même morceau qu'on suivait.
+
+Quitter la tablature, à l'inverse, éteint tout — sauf si un angle a pris le
+relais, auquel cas il continue. Le moteur qui se retire sans successeur emporte
+l'état de lecture avec lui : sans ça, il restait « en lecture » sans personne
+pour jouer, et le média suivant se lançait tout seul en arrivant.
+
+Changer de son ne regrave rien : `playerMode` se modifie à chaud, alphaTab
+détruit son lecteur, en crée un autre et régénère son midi. Deux points ont
+demandé du temps :
+
+- **Seul un clic sur la partition déplace l'enregistrement.** alphaTab remet son
+  lecteur au début chaque fois qu'il régénère son midi — chargement, changement
+  de piste, bascule de son — et l'annonce par le `seekTo` qui sert aussi au clic
+  sur une mesure. Ouvrir une tablature pendant la lecture ramenait donc
+  l'enregistrement à zéro. Une fenêtre ouverte au `mousedown` sur la partition,
+  refermée quand le relâchement remonte à la fenêtre, distingue les deux.
+- **Le worker du synthétiseur ne démarrait pas en développement.** Le plugin
+  Vite lui injecte un import de l'environnement de Vite préfixé par notre
+  `base` — `/dys/@vite/env` — que le serveur de développement ne sait pas
+  résoudre. Un greffon de trois lignes le renvoie sur `/@vite/env`.
 
 ### Le lecteur
 
@@ -165,6 +217,10 @@ ce qui donne les deux comportements attendus :
 Une vidéo, elle, s'arrête quand on quitte la page : elle n'a plus de surface où
 s'afficher, et lui faire suivre l'`<audio>` ferait télécharger le fichier deux
 fois.
+
+À ces deux éléments s'ajoute un troisième cas, sans élément du tout : un moteur
+externe, que le lecteur commande par des fonctions au lieu d'une source. C'est
+la tablature jouée par alphaTab, et la barre n'y voit que du feu.
 
 ### La file de lecture
 

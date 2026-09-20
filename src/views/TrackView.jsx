@@ -9,7 +9,7 @@ import { navigate } from '../lib/useHashRoute'
 
 export function TrackView({ trackId, groupId }) {
   const track = getTrack(trackId)
-  const { current, playing, time, play, switchTo, toggle, setVideoEl } = usePlayer()
+  const { current, playing, time, play, select, switchTo, toggle, setVideoEl } = usePlayer()
 
   if (!track) {
     return (
@@ -45,7 +45,12 @@ export function TrackView({ trackId, groupId }) {
   useEffect(() => {
     if (!arrivee.current) return
     arrivee.current = false
-    if (groupId && selected.id !== current?.id) play(selected)
+    if (!groupId || selected.id === current?.id) return
+    // Une tablature ne se joue pas : le lien n'y désigne le master que s'il la
+    // fait défiler, et sans le lancer — comme le fait la pastille. Sinon la
+    // barre du lecteur s'ajouterait au transport du synthétiseur.
+    if (!surTablature) play(selected)
+    else if (master && track.tabSync !== false) select(master)
   })
 
   return (
@@ -92,8 +97,10 @@ export function TrackView({ trackId, groupId }) {
         )}
       </div>
 
+      {/* Une clé par morceau : sans elle, React garde la tablature en place d'un
+          morceau à l'autre, avec le son choisi et la piste du précédent. */}
       {surTablature ? (
-        <TabScore trackId={trackId} master={master}
+        <TabScore key={trackId} trackId={trackId} master={master}
           sync={Boolean(master) && track.tabSync !== false}
           offset={track.tabOffset ?? 0} hauteur="max-h-[60vh]"
           onPistes={setPistes} />
